@@ -12,7 +12,7 @@ function App() {
 
         {/* Footer */}
         <footer className="bg-gray-700 text-center p-4">
-          <p className="text-white">Amity University &copy; 2025 ATS Resume Checker. All rights reserved.</p>
+          <p className="text-white">Amity University, Patna &copy; 2025 ATS Resume Checker. All rights reserved.</p>
         </footer>
       </div>
     </>
