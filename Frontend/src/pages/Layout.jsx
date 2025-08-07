@@ -8,7 +8,7 @@ function Layout() {
     <div
       className="flex flex-col h-screen backdrop:blur-sm bg-cover bg-center"
       style={{
-        backgroundImage: 'url("/homePC.png")',
+        backgroundImage: 'url("/home.png")',
       }}
     >
       <Header />

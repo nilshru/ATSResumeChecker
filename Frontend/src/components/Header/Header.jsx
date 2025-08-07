@@ -6,12 +6,12 @@ function Header() {
     <div className="flex justify-center items-center">
       <nav className="sticky top-0 z-50 flex flex-row justify-between items-center m-2 w-3xl px-6 py-4 
                       rounded-4xl backdrop-blur-sm bg-white/10 border-2 border-white/20">
-        <div className="flex w-[40px]">
+        <div className="flex w-[30px] sm:w-[40px]">
           <img src="./logo.png" alt="ATS" />
         </div>
 
         <ul className="flex flex-row justify-center items-center w-full">
-          <li className="mx-4">
+          <li className="mx-4 text-[12px] sm:text-lg">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -21,7 +21,7 @@ function Header() {
               Resume Checker
             </NavLink>
           </li>
-          <li className="mx-4">
+          <li className="mx-4 text-[12px] sm:text-lg">
             <NavLink
               to="/upload"
               className={({ isActive }) =>
