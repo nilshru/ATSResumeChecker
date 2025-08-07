@@ -15,3 +15,8 @@ html, body, #root {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+/* html,
+body {
+	min-width: 320px;
+} */
