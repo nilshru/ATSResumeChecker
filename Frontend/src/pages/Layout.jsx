@@ -5,15 +5,18 @@ import Footer from "../components/Footer/Footer";
 
 function Layout() {
   return (
-    <>
-      <div className="flex flex-col min-h-screen overflow-hidden bg-blue-100">
-        <Header />
-        <main className="flex-grow">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
-    </>
+    <div
+      className="flex flex-col h-screen backdrop:blur-sm bg-cover bg-center"
+      style={{
+        backgroundImage: 'url("/homePC.png")',
+      }}
+    >
+      <Header />
+      <main className="flex-grow overflow-y-auto hide-scrollbar">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
   );
 }
 
