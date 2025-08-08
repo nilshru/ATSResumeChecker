@@ -9,17 +9,18 @@ function Home() {
       >
         {/* Left Side - Text */}
         <div className="flex flex-col items-start">
-          <h1 className="text-2xl sm:text-[60px] font-extrabold sm:font-bold">
+          <h1 className=" font-ubuntu text-2xl sm:text-[60px] font-extrabold  sm:font-bold">
             Smart Resume <span className="text-teal-400">Analyzer</span>
           </h1>
-          <h1 className="text-2xl sm:text-[60px] font-extrabold sm:font-bold">
+          <h1 className="  font-ubuntu text-2xl sm:text-[60px] font-extrabold sm:font-bold">
             <span className="text-teal-400">& Builder with AI</span>
           </h1>
-          <p className=" mt-2 sm:mt-5 text-sm sm:text-2xl text-gray-600 sm:w-[500px]">
+          <p className=" font-ubuntu mt-2 sm:mt-5 text-sm sm:text-2xl text-gray-600 sm:w-[500px]">
             Optimize your resume for any job in seconds, Check formatting,
             grammar, ATS keywords & rank instantly
           </p>
-        <div className="flex items-start w-full gap-4 sm:gap-20">
+          
+          <div className="flex items-start w-full gap-4 sm:gap-20">
 
           <button className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm
            bg-teal-400 hover:bg-teal-300 border-2 shadow-md 
