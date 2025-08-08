@@ -6,13 +6,13 @@ import Footer from "../components/Footer/Footer";
 function Layout() {
   return (
     <div
-      className="flex flex-col h-screen backdrop:blur-sm bg-cover bg-center bg-gradient-to-t from-black via-40% via-teal-600 to-black "
+      className="flex flex-col h-screen bg-gray-100  "
       // style={{
       //   backgroundImage: 'url("/homephone.jpg")',
       // }}
     >
       <Header />
-      <main className="flex-grow overflow-y-auto hide-scrollbar">
+      <main className="flex-grow ">
         <Outlet />
       </main>
       <Footer />
