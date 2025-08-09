@@ -39,12 +39,12 @@ function Main() {
           <h1 className="  font-ubuntu text-2xl sm:text-[60px] font-extrabold sm:font-bold">
             <span className="text-teal-400">& Builder with AI</span>
           </h1>
-          <p className=" font-ubuntu mt-2 sm:mt-5 text-sm sm:text-2xl text-gray-500 sm:w-[550px]">
+          <p className=" font-ubuntu mt-3 sm:mt-5 text-sm sm:text-2xl text-gray-500 sm:w-[550px]">
             Optimize your resume for any job in seconds, Check formatting,
             grammar, ATS keywords & rank instantly
           </p>
 
-          <div className="flex items-start w-full gap-4 sm:gap-20">
+          <div className="flex items-start w-full mt-5 sm:mt-0 gap-4 sm:gap-20">
             <button
               className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm
            bg-teal-400 hover:bg-teal-300 border-2 shadow-lg 
