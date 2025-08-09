@@ -1,78 +1,102 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import "tailwindcss";
 
-
-
-
+/* Full height layout reset */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Ubuntu', sans-serif;
 }
 
-/* Hide scrollbar for all browsers */
+/* Bubble animation styles */
+.bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none; /* Allow clicks through bubbles */
+  z-index: 0;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(0, 243, 207, 0.208);
+  border-radius: 50%;
+  animation: rise 10s infinite ease-in;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-1200px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Floating animation for tick or elements */
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float-slow {
+  animation: floatUpDown 4s ease-in-out infinite;
+}
+
+/* Tailwind custom components */
+.glass {
+  background-color: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+.glass-card {
+  background-color: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.4);
+  /* box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); */
+  border-radius: 0.75rem;
+}
+
+.glass-button {
+  transition: all 0.2s;
+}
+
+.glass-button:hover {
+  background-color: rgba(255,255,255,1);
+}
+
+/* Hide scrollbar */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
+  -ms-overflow-style: none;  /* IE & Edge */
   scrollbar-width: none;     /* Firefox */
 }
 
-.ubuntu-light {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 300;
-  font-style: normal;
-}
+/* Ubuntu font variations */
+.ubuntu-light { font-weight: 300; }
+.ubuntu-regular { font-weight: 400; }
+.ubuntu-medium { font-weight: 500; }
+.ubuntu-bold { font-weight: 700; }
 
-.ubuntu-regular {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.ubuntu-medium {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.ubuntu-bold {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.ubuntu-light-italic {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 300;
-  font-style: italic;
-}
-
-.ubuntu-regular-italic {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.ubuntu-medium-italic {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 500;
-  font-style: italic;
-}
-
-.ubuntu-bold-italic {
-  font-family: "Ubuntu", sans-serif;
-  font-weight: 700;
-  font-style: italic;
-
-}
-
-body {
-  font-family: 'Ubuntu', sans-serif;
-}
-
-/* html,
-body {
-	min-width: 320px;
-} */
+.ubuntu-light-italic { font-weight: 300; font-style: italic; }
+.ubuntu-regular-italic { font-weight: 400; font-style: italic; }
+.ubuntu-medium-italic { font-weight: 500; font-style: italic; }
+.ubuntu-bold-italic { font-weight: 700; font-style: italic; }

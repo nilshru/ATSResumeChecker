@@ -5,14 +5,9 @@ import Footer from "../components/Footer/Footer";
 
 function Layout() {
   return (
-    <div
-      className="flex flex-col h-screen bg-gray-100  "
-      // style={{
-      //   backgroundImage: 'url("/homephone.jpg")',
-      // }}
-    >
+    <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
-      <main className="flex-grow ">
+      <main className="flex-grow pt-16 ">
         <Outlet />
       </main>
       <Footer />
