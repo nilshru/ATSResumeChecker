@@ -57,6 +57,18 @@ html, body, #root {
   animation: floatUpDown 4s ease-in-out infinite;
 }
 
+/* robot css */
+.robot-wrapper {
+  margin-top: 180px;
+}
+
+@media (max-width: 768px) {
+  .robot-wrapper {
+    margin-top: 60px;
+  }
+}
+
+
 /* Tailwind custom components */
 .glass {
   background-color: rgba(255,255,255,0.7);

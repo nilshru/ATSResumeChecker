@@ -42,7 +42,7 @@ function Features() {
       ></div>
 
       {/* Content (Heading + Features) */}
-      <div className="relative flex flex-col justify-center items-center flex-grow py-20 z-10">
+      <div className="relative flex flex-col justify-center items-center flex-grow py-32 z-10">
         {/* Heading Section */}
         <h1 className="text-3xl md:text-6xl font-bold mb-4">Why Choose Us</h1>
         <p className=" text-lg sm:text-xl text-center text-gray-500 max-w-xl mx-auto">

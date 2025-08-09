@@ -7,10 +7,10 @@ function Main() {
   return (
     <>
       <div
-        className="relative min-h-screen flex items-center justify-center flex-col gap-x-20 sm:flex-row px-10  w-full 
-        bg-gradient-to-br from-[rgba(45,212,191,0.3)] via-gray-100 to-[rgba(45,212,190,0.16)] overflow-hidden
+        className="relative h-full mt-[-10px] flex items-center justify-center flex-col gap-x-0 sm:flex-row px-10  w-full 
+        bg-gradient-to-br   from-[rgba(45,212,191,0.3)] via-gray-100 to-[rgba(45,212,190,0)] overflow-hidden
         "
-        style={{ marginTop: '-100px' }}
+        // style={{ marginTop: '-100px' }}
       >
         {/* Bubble Background */}
         <div className="bubbles">
@@ -32,7 +32,7 @@ function Main() {
 
 
         {/* Left Side - Text */}
-        <div className="flex flex-col items-start relative z-10">
+        <div className="flex flex-col mt-10 items-start relative z-10">
           <h1 className=" font-ubuntu text-2xl sm:text-[80px] font-extrabold  sm:font-bold">
             Smart Resume <span className="text-teal-400">Analyzer</span>
           </h1>
@@ -63,7 +63,9 @@ function Main() {
         </div>
 
         {/* Right Side - Robot with floating Tick */}
-        <div className="relative flex justify-end items-end mt-10 sm:mt-30 w-[200px] sm:w-[300px] z-10">
+        <div className="relative robot-wrapper flex justify-end items-end sm:mt-30 w-[200px]  sm:w-[300px] z-10"
+        
+        >
           <img
             src="/greenTick.png"
             alt="Tick"
