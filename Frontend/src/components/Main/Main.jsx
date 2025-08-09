@@ -7,11 +7,10 @@ function Main() {
   return (
     <>
       <div
-        className="relative min-h-screen flex border-b-4 border-white/10 
-        items-center justify-center flex-col gap-x-20 sm:flex-row px-10  w-full 
-        bg-gradient-to-br from-[rgba(45,212,191,0.3)] via-gray-100 to-[rgba(45,212,191,0.15)] overflow-hidden
+        className="relative min-h-screen flex items-center justify-center flex-col gap-x-20 sm:flex-row px-10  w-full 
+        bg-gradient-to-br from-[rgba(45,212,191,0.3)] via-gray-100 to-[rgba(45,212,190,0.16)] overflow-hidden
         "
-        style={{ marginTop: '-60px' }}
+        style={{ marginTop: '-100px' }}
       >
         {/* Bubble Background */}
         <div className="bubbles">
