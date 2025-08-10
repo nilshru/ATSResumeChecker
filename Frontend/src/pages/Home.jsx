@@ -1,12 +1,18 @@
 import React from 'react'
-import Main from '../components/Main/Main'
+import Hero from '../components/Hero/Hero'
 import Features from '../components/Features/Features'
+import Works from '../components/Works/Works'
+import Testimonials from '../components/Testimonials/Testimonials'
+
 
 function Home() {
   return (
     <>
-    <Main/>
+    <Hero/>
     <Features/>
+    <Works/>
+    <Testimonials/>
+   
 
 
     </>

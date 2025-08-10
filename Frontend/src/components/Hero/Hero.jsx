@@ -1,7 +1,7 @@
 import React from "react";
 import { generateBubbles } from "../../utils/bubbleUtils";
 
-function Main() {
+function Hero() {
   const bubbles = generateBubbles(30);
 
   return (
@@ -32,10 +32,10 @@ function Main() {
 
         {/* Left Side - Text */}
         <div className="flex flex-col mt-10 items-start relative z-10">
-          <h1 className=" font-ubuntu text-3xl md:text-[43px]  lg:text-[80px] font-extrabold  sm:font-bold">
+          <h1 className=" font-ubuntu text-3xl md:text-[43px]  lg:text-7xl font-extrabold  sm:font-bold">
             Smart Resume <span className="text-teal-400">Analyzer</span>
           </h1>
-          <h1 className="  font-ubuntu text-3xl md:text-[43px] lg:text-[80px] font-extrabold sm:font-bold">
+          <h1 className="  font-ubuntu text-3xl md:text-[43px] lg:text-7xl font-extrabold sm:font-bold">
             <span className="text-teal-400">& Builder with AI</span>
           </h1>
           <p className=" font-ubuntu mt-3 sm:mt-5 text-lg md:text-xl lg:text-2xl text-gray-500 md:max-w-lg  lg:w-full">
@@ -82,4 +82,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default Hero;

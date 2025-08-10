@@ -41,7 +41,7 @@ function Features() {
     <div className="relative w-full">
       {/* Background with only LEFT side tilt */}
       <div
-        className="absolute inset-0 bg-gradient-to-bl  from-[rgba(45,212,191,0.6)] via-gray-100 to-[rgba(45,212,191,0.15)]"
+        className="absolute inset-0 bg-gradient-to-bl  from-[rgba(45,212,191,0.6)] via-gray-100 to-[rgba(45,212,191,0.0)]"
         style={{
           clipPath: "polygon(0 50px, 100% 0, 100% 100%, 0% 100%)",
           top: "-60px",
@@ -50,7 +50,7 @@ function Features() {
       ></div>
 
       {/* Content (Heading + Features) */}
-      <div className="relative flex flex-col justify-center items-center flex-grow py-20 sm:py-32 z-10 overflow-x-hidden">
+      <div className="relative flex flex-col justify-center items-center flex-grow pt-20 sm:py-24 z-10 overflow-x-hidden">
         {/* Heading Section */}
         <h1 className="text-3xl md:text-6xl font-bold mb-4">Why Choose Us</h1>
         <p className=" text-lg sm:text-xl text-center text-gray-500 max-w-xl mx-auto">
@@ -63,13 +63,13 @@ function Features() {
             <div
               key={index}
                data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
-              className="glass-card p-6 transition-all shadow-lg hover:shadow-2xl bg-white rounded-lg"
+              className="glass-card p-6 transition-all shadow-lg hover:shadow-2xl hover:scale-105 bg-white rounded-lg"
             >
-              <div className="mb-4 text-teal-400 p-3 rounded-full inline-block glass">
+              <div className="mb-4 text-teal-400 p-3 rounded-full inline-block shadow-lg shadow-teal-200">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+              <p className="text-muted-foreground text-gray-500">{feature.description}</p>
             </div>
           ))}
         </div>
