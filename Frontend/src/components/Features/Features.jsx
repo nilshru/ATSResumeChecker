@@ -1,7 +1,15 @@
 import React from "react";
 import { Layout, Palette, Search, FileDown } from "lucide-react";
-
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from 'react';
 function Features() {
+      useEffect(() => {
+    AOS.init({
+      duration: 600, // animation speed (ms)
+      once: true,    // scroll karke wapas aane par repeat na ho
+    });
+  }, []);
   const features = [
     {
       icon: <Layout size={24} className="text-primary" />,
@@ -42,7 +50,7 @@ function Features() {
       ></div>
 
       {/* Content (Heading + Features) */}
-      <div className="relative flex flex-col justify-center items-center flex-grow py-32 z-10">
+      <div className="relative flex flex-col justify-center items-center flex-grow py-20 sm:py-32 z-10 overflow-x-hidden">
         {/* Heading Section */}
         <h1 className="text-3xl md:text-6xl font-bold mb-4">Why Choose Us</h1>
         <p className=" text-lg sm:text-xl text-center text-gray-500 max-w-xl mx-auto">
@@ -54,7 +62,8 @@ function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="glass-card p-6 transition-all shadow-lg hover:shadow-xl bg-white rounded-lg"
+               data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
+              className="glass-card p-6 transition-all shadow-lg hover:shadow-2xl bg-white rounded-lg"
             >
               <div className="mb-4 text-teal-400 p-3 rounded-full inline-block glass">
                 {feature.icon}

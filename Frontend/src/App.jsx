@@ -4,7 +4,9 @@ import Home from './pages/Home'
 import Layout from './pages/Layout'
 import Upload from './pages/Upload'
 
+
 function App() {
+
   return (
     
       <BrowserRouter>

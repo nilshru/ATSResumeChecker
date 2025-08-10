@@ -9,6 +9,11 @@ html, body, #root {
   font-family: 'Ubuntu', sans-serif;
 }
 
+html,
+body {
+	min-width: 320px;
+  min-height: 100%;
+}
 /* Bubble animation styles */
 .bubbles {
   position: absolute;
