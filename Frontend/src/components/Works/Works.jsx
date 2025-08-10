@@ -47,13 +47,13 @@ function Works() {
       <div className="relative z-10 pt-10 pb-20 px-6 sm:px-12 text-white">
         <div className="max-w-8xl mx-auto text-center">
           <h2
-            className="text-3xl md:text-6xl font-extrabold mb-6 text-black drop-shadow-lg"
+            className="text-3xl md:text-6xl font-extrabold mb-6 text-black "
             data-aos="fade-down"
           >
             How It Works
           </h2>
           <p
-            className="text-lg sm:text-xl text-center text-gray-500 max-w-xl mx-auto mb-14"
+            className="text-lg sm:text-xl text-center text-gray-600 max-w-xl mx-auto mb-14"
             data-aos="fade-up"
             data-aos-delay="200"
           >

@@ -2,12 +2,12 @@ import React from "react";
 import { Layout, Palette, Search, FileDown } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from 'react';
+import { useEffect } from "react";
 function Features() {
-      useEffect(() => {
+  useEffect(() => {
     AOS.init({
       duration: 600, // animation speed (ms)
-      once: true,    // scroll karke wapas aane par repeat na ho
+      once: true, // scroll karke wapas aane par repeat na ho
     });
   }, []);
   const features = [
@@ -52,9 +52,19 @@ function Features() {
       {/* Content (Heading + Features) */}
       <div className="relative flex flex-col justify-center items-center flex-grow pt-20 sm:py-24 z-10 overflow-x-hidden">
         {/* Heading Section */}
-        <h1 className="text-3xl md:text-6xl font-bold mb-4">Why Choose Us</h1>
-        <p className=" text-lg sm:text-xl text-center text-gray-500 max-w-xl mx-auto">
-          Our platform makes resume creation simple, effective, and tailored to get you noticed.
+        <h1
+          className="text-3xl md:text-6xl font-bold mb-4"
+          data-aos="fade-down"
+        >
+          Why Choose Us
+        </h1>
+        <p
+          className=" text-lg sm:text-xl text-center text-gray-500 max-w-xl mx-auto"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          Our platform makes resume creation simple, effective, and tailored to
+          get you noticed.
         </p>
 
         {/* Features Grid */}
@@ -62,14 +72,16 @@ function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-               data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
+              data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
               className="glass-card p-6 transition-all shadow-lg hover:shadow-2xl hover:scale-105 bg-white rounded-lg"
             >
               <div className="mb-4 text-teal-400 p-3 rounded-full inline-block shadow-lg shadow-teal-200">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground text-gray-500">{feature.description}</p>
+              <p className="text-muted-foreground text-gray-500">
+                {feature.description}
+              </p>
             </div>
           ))}
         </div>
