@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Profile() {
+  const { logout } = useAuth();
+   const navigate = useNavigate();
   // Initial user data
   const [user, setUser] = useState({
     fullName: "John Doe",
@@ -66,7 +70,9 @@ function Profile() {
 
           {/* Phone */}
           <div>
-            <h2 className="text-sm font-semibold text-teal-400">Phone Number</h2>
+            <h2 className="text-sm font-semibold text-teal-400">
+              Phone Number
+            </h2>
             {isEditing ? (
               <input
                 type="tel"
@@ -127,7 +133,13 @@ function Profile() {
         {/* Logout Button */}
         <button
           className="mt-6 w-full py-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
-          onClick={() => alert("Logout clicked! Implement logout logic.")}
+          onClick={(e) => {
+            e.preventDefault();
+            if (confirm("Are you sure you want to logout?")) {
+          logout();
+          navigate("/", { replace: true }); // Back button won't return
+        }
+          }}
         >
           Logout
         </button>

@@ -1,7 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
+  
+  const { user } = useAuth();
+
+  if(user) return <Navigate to="/" />
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl shadow-teal-200 p-8 space-y-6">
