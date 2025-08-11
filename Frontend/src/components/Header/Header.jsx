@@ -24,7 +24,7 @@ function Header() {
           </NavLink>
         </li>
         <li className="mx-1 sm:mx-4 text-[18px] sm:text-2xl hover:underline">
-          <NavLink to="/atschecker" className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+          <NavLink to="/" className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
             ATS Score
           </NavLink>
         </li>
@@ -71,7 +71,7 @@ function Header() {
               </NavLink>
             </li>
             <li className="py-2 w-full">
-              <NavLink to="/atschecker" onClick={() => setIsOpen(false)} className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+              <NavLink to="/" onClick={() => setIsOpen(false)} className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
                 ATS Score
               </NavLink>
             </li>
