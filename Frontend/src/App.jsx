@@ -5,6 +5,8 @@ import Layout from './pages/Layout'
 import Templates from './pages/Templates'
 import Profile from './pages/Profile'
 import AtsCheck from './pages/AtsCheck'
+import Login from './pages/Login'
+import SignUp from './pages/SignUp'
 
 
 
@@ -20,6 +22,8 @@ function App() {
             <Route path="atschecker" element={<AtsCheck/>}/>
             <Route path="templates" element={<Templates/>}/>
             <Route path="profile" element={<Profile/>}/>
+            <Route path="login" element={<Login/>}/>
+            <Route path="signup" element={<SignUp/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
