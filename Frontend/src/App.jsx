@@ -4,7 +4,9 @@ import Home from './pages/Home'
 import Layout from './pages/Layout'
 import Templates from './pages/Templates'
 import Profile from './pages/Profile'
-import ATSchecker from './pages/ATSchecker'
+import AtsCheck from './pages/AtsCheck'
+
+
 
 
 function App() {
@@ -15,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />} >
             <Route index element={<Home />} />
-            <Route path="atschecker" element={<ATSchecker/>}/>
+            <Route path="atschecker" element={<AtsCheck/>}/>
             <Route path="templates" element={<Templates/>}/>
             <Route path="profile" element={<Profile/>}/>
           </Route>
