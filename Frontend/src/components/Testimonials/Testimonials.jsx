@@ -65,7 +65,7 @@ function Testimonials() {
       {/* Polygon Background */}
      
       <div
-        className="absolute inset-0 bg-gradient-to-bl from-[rgba(0,217,255,0.6)] via-gray-100 to-[rgba(45,212,191,0.15)]"
+        className="absolute inset-0 bg-gradient-to-bl from-[rgba(0,242,255,0.6)] via-gray-100 to-[rgba(45,212,191,0.15)]"
         style={{
           clipPath: "polygon(0 50px, 100% 0, 100% 100%, 0% 100%)",
           top: "-60px",

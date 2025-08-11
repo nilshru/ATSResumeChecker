@@ -1,5 +1,6 @@
 import React from "react";
 import { generateBubbles } from "../../utils/bubbleUtils";
+import { Link } from "react-router-dom";
 
 function Hero() {
   const bubbles = generateBubbles(30);
@@ -44,6 +45,7 @@ function Hero() {
           </p>
 
           <div className="flex items-start w-full mt-5  sm:mt-0 gap-4 sm:gap-20">
+            <Link to="/atschecker">
             <button
               className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm
                bg-teal-400 hover:bg-teal-300 border-2 shadow-lg 
@@ -52,7 +54,8 @@ function Hero() {
             >
               Upload Resume
             </button>
-
+            </Link>
+            <Link to="/templates">
             <button
               className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm 
                 bg-white/60 hover:shadow-lg border-2 shadow-md hover:bg-white border-teal-400 
@@ -61,6 +64,7 @@ function Hero() {
             >
               Try Sample
             </button>
+            </Link>
           </div>
         </div>
 

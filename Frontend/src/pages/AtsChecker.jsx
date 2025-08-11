@@ -1,10 +1,10 @@
 import React from 'react'
 
-function Upload() {
+function AtsChecker() {
   return (
        <div className="flex flex-col justify-center items-center flex-grow overflow-hidden">
         <h1 className="text-3xl font-bold  underline">
-          Upload
+          AtsChecker
         </h1>
         
         
@@ -12,4 +12,4 @@ function Upload() {
   )
 }
 
-export default Upload
+export default AtsChecker
