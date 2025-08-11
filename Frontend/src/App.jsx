@@ -7,6 +7,7 @@ import Profile from './pages/Profile'
 import AtsCheck from './pages/AtsCheck'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
+import NotFound from './pages/NotFound'
 
 
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="login" element={<Login/>}/>
             <Route path="signup" element={<SignUp/>}/>
           </Route>
+            <Route path="*" element={<NotFound/>} />
         </Routes>
       </BrowserRouter>
   
