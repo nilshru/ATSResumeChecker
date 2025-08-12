@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import { AuthContextProvider } from "./context/AuthContext";
+import ResumeDetails from "./pages/ResumeDetails";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="atschecker" element={<AtsCheck />} />
             <Route path="templates" element={<Templates />} />
+            <Route path="templates/:id" element={<ResumeDetails />} />
             <Route path="profile" element={<Profile />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<SignUp />} />

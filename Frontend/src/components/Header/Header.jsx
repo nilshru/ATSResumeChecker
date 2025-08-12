@@ -12,7 +12,7 @@ function Header() {
       {/* Logo */}
       <Link to="/">
       <div className="flex items-center">
-        <img src="./logo.png" alt="ATS" className="w-[30px] sm:w-[40px]" />
+        <img src="/logo.png" alt="ATS" className="w-[30px] sm:w-[40px]" />
         <span className="ml-2  text-xl sm:text-3xl  text- hidden sm:block" >
           Resume Qualify
         </span>
