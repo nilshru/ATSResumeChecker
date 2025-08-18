@@ -55,7 +55,7 @@ function ProjectsDetails({ data, setData }) {
         >
           Delete Last Project
         </button>
-      </div>
+      </div> 
     </div>
   );
 }

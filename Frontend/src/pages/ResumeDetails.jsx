@@ -17,7 +17,7 @@ import ProjectsDetails from "../components/resumeSteps/ProjectsDetails";
 import AchievementsDetails from "../components/resumeSteps/AchievementsDetails";
 import ResumePreview from "../components/resumeSteps/ResumePreview";
 
-function ResumeDetails() {
+function ResumeDetails() { 
   const { id } = useParams();
   const { profile, updateProfile } = useAuth();
 

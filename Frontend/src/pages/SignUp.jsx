@@ -18,7 +18,7 @@ function SignUp() {
     setError("");
     setLoading(true);
 
-    try {
+    try { 
       await signup({ email, password, username: fullname });
       alert("Account created successfully!");
       navigate("/login"); // redirect to login page

@@ -30,7 +30,7 @@ function NotFound() {
         {/* Message */}
         <p className="text-gray-600 mb-6 text-lg">
           Oops! The page you're looking for doesn't exist.
-        </p>
+        </p> 
 
         {/* Back Home Button */}
         <Link

@@ -21,7 +21,7 @@ function PersonalDetails({ data, setData }) {
             src={data.personal.profileImage}
             alt="profile"
             className="w-24 h-24 rounded-full object-cover"
-          />
+          /> 
         </div>
       )}
 

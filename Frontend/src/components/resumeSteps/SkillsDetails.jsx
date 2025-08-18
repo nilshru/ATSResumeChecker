@@ -47,7 +47,7 @@ function SkillsDetails({ data, setData, nextStep, prevStep }) {
         >
           Delete Skill
         </button>
-      </div>
+      </div> 
     </div>
   );
 }

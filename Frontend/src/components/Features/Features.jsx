@@ -46,7 +46,7 @@ function Features() {
           clipPath: "polygon(0 50px, 100% 0, 100% 100%, 0% 100%)",
           top: "-60px",
           zIndex: 0,
-        }}
+        }} 
       ></div>
 
       {/* Content (Heading + Features) */}

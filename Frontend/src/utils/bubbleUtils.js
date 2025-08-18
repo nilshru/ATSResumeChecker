@@ -14,4 +14,4 @@ export function generateBubbles(count = 20) {
       duration,
     };
   });
-}
+} 

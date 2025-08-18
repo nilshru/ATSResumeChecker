@@ -17,3 +17,4 @@ export function cleanExtractedText(rawText) {
     // Trim starting/ending spaces
     .trim();
 }
+ 

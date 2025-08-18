@@ -19,7 +19,7 @@ function Login() {
     setError("");
     setLoading(true);
 
-    try {
+    try { 
       await login({ email, password });
       navigate("/"); // redirect to homepage/dashboard
     } catch (err) {

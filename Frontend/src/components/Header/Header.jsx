@@ -14,7 +14,7 @@ function Header() {
       className="fixed top-0 left-0 z-50 flex items-center justify-between
                     w-full px-5 sm:px-10 py-4 backdrop-blur-sm bg-white/70 
                     border-b-2 shadow-xl shadow-teal-200/10 border-b-teal-400"
-    >
+    > 
       {/* Logo */}
       <Link to="/">
         <div className="flex items-center">

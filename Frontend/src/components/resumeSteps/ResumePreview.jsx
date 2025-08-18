@@ -110,5 +110,5 @@ function ResumePreview({ data = {} }) {
     </div>
   );
 }
-
+ 
 export default ResumePreview;

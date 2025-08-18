@@ -11,7 +11,7 @@ function FeedBackSection() {
           clipPath: "polygon(0 0px, 100% 50px, 100% 100%, 0% 100%)",
           top: "-60px",
           zIndex: 0,
-        }}
+        }} 
       ></div>
 
       {/* Content */}

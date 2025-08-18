@@ -56,7 +56,7 @@ function AtsCheck() {
       const text = await extractTextFromFile(selectedFile);
       setResumeText(text);
       await callAtsScore(text);
-    } catch (err) {
+    } catch (err) { 
       alert(err.message);
     }
   };

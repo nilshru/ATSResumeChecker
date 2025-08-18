@@ -56,7 +56,7 @@ function ExperienceDetails({ data, setData }) {
           onClick={deleteExperience}
           className="bg-red-300 px-3 py-1 rounded"
         >
-          - Delete Experience
+          - Delete Experience 
         </button>
       </div>
     </div>

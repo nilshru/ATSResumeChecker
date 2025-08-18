@@ -55,7 +55,7 @@ function Hero() {
               Upload Resume
             </button>
             </Link>
-            <Link to="/templates">
+            <Link to="/templates"> 
             <button
               className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm 
                 bg-white/60 hover:shadow-lg border-2 shadow-md hover:bg-white border-teal-400 

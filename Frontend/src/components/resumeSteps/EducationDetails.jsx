@@ -18,7 +18,7 @@ function EducationDetails({ data, setData }) {
     const updated = data.education.filter((_, idx) => idx !== index);
     setData({ ...data, education: updated });
   };
-
+ 
   return (
     <div>
       <h2 className="text-xl font-bold mb-2">Education Details</h2>

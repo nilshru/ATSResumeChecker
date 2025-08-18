@@ -18,7 +18,7 @@ function SummaryDetails({ data, setData }) {
 
 
     </div>
-  );
+  ); 
 }
 
 export default SummaryDetails;

@@ -16,7 +16,7 @@ export async function extractTextFromFile(file) {
 
   let rawText = "";
   if (fileExt === "pdf") {
-    rawText = await extractFromPDF(file);
+    rawText = await extractFromPDF(file); 
   } else if (fileExt === "docx") {
     rawText = await extractFromDOCX(file);
   } else {

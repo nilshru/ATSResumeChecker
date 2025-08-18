@@ -10,7 +10,7 @@ import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./context/AuthContext";
 import ResumeDetails from "./pages/ResumeDetails";
 
-function App() {
+function App() { 
   return (
     <BrowserRouter>
       <AuthProvider>

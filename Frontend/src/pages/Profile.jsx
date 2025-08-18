@@ -58,7 +58,7 @@ const handleDownloadResume = () => {
   }
 };
 
-
+ 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-24 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl shadow-teal-200 p-8 space-y-6">

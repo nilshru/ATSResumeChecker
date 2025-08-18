@@ -34,7 +34,7 @@ function UploadImage({ onUpload }) {
     if (!file) return setError("Please choose an image first.");
     setError("");
     setUploading(true);
-
+ 
     try {
       const formData = new FormData();
       formData.append("file", file);

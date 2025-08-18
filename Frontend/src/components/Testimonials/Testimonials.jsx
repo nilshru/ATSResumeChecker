@@ -71,7 +71,7 @@ function Testimonials() {
           top: "-60px",
           zIndex: 0,
         }}
-      ></div>
+      ></div> 
 
        <div className="bubbles">
           {bubbles.map((bubble) => (

@@ -55,7 +55,7 @@ function DownloadResume({ resumeRef }) {
     return css;
   };
 
-  return (
+  return ( 
     <div className="flex gap-3 mt-4">
       <button
         onClick={downloadPDF}

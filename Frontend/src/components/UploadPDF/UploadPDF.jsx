@@ -16,7 +16,7 @@ export default function UploadPDF() {
       if (selectedFile.type !== "application/pdf") {
         setError("Only PDF files are allowed!");
         setFile(null);
-        return;
+        return; 
       }
 
       // ✅ Max 2MB size

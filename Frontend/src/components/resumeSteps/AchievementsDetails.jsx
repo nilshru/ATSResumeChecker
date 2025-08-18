@@ -42,7 +42,7 @@ function AchievementsDetails({ data, setData }) {
 
       
     </div>
-  );
+  ); 
 }
 
 export default AchievementsDetails;
