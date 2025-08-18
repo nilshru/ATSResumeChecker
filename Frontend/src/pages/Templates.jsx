@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const templatesData = [
   {
@@ -10,12 +11,40 @@ const templatesData = [
 
 ];
 
+
+
 function Templates() {
+  const {user} = useAuth();
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate('/login');
+  //   }
+  // },[navigate, user]);
+
 
   const handleClick = (id) => {
     navigate(`/templates/${id}`);
   };
+    if (!user)
+    return (
+      <>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+
+        <div className="text-center text-5xl">
+          Please login to use this feature
+        </div>
+        <button
+          className="bg-teal-400 hover:bg-teal-500 text-white px-4 py-2 rounded mt-4"
+          onClick={() => navigate("/login")}
+        >
+          Login
+        </button>
+      </div>
+      </>
+    );
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">

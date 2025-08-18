@@ -2,7 +2,7 @@ import React from "react";
 
 function ResumePreview({ data = {} }) {
   return (
-    <div className="text-gray-800">
+    <div className="text-gray-900">
       {/* Personal */}
       <div className="border-b pb-2 mb-2">
         <h1 className="text-2xl text-center font-bold">

@@ -107,6 +107,23 @@ body {
   scrollbar-width: none;     /* Firefox */
 }
 
+
+/* --- Print settings --- */
+@media print {
+  body {
+    overflow: visible !important;
+  }
+  .resume-container {
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+
+
+
+
 /* Ubuntu font variations */
 .ubuntu-light { font-weight: 300; }
 .ubuntu-regular { font-weight: 400; }

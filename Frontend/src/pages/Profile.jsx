@@ -1,145 +1,134 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
-  const { logout } = useAuth();
-   const navigate = useNavigate();
-  // Initial user data
-  const [user, setUser] = useState({
-    fullName: "John Doe",
-    email: "temp@example.com",
-    phone: "+91 1234567890",
-    address: "123 Main St, City, Country",
-  });
+  const { user, profile, loading, logout, updateProfile } = useAuth();
+  const [formData, setFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
 
-  // Editing mode state
-  const [isEditing, setIsEditing] = useState(false);
+  // Initialize form with profile data
+  useEffect(() => {
+    if (profile) setFormData(profile);
+  }, [profile]);
 
-  // Handle input changes
+  if (loading) return <div className="text-center mt-20">Loading...</div>;
+  if (!user)
+    return <div className="text-center mt-20">You are not logged in</div>;
+
   const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save changes and exit edit mode
-  const handleSave = () => {
-    // You can add validation or API call here
-    setIsEditing(false);
-    alert("Profile updated successfully!");
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await updateProfile(formData);
+      alert("Profile updated successfully!");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  // Inside your Profile component, after handleLogout
+
+//  console.log(profile);
+const handleDownloadResume = () => {
+  if (!profile?.resumePdf) {
+    alert("No resume available to download.");
+    return;
+  }
+
+  // Open in new tab
+  const newWindow = window.open();
+  if (newWindow) {
+    newWindow.location.href = profile.resumePdf;
+    newWindow.focus();
+  } else {
+    alert("Please allow popups for this website to view the resume.");
+  }
+};
+
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="bg-white rounded-lg shadow-xl shadow-teal-200 p-8 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-black mb-6 text-center">
-          User Profile
-        </h1>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-24 px-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-xl shadow-teal-200 p-8 space-y-6">
+        <h2 className="text-center text-2xl font-extrabold text-black sm:text-3xl">
+          My Profile
+        </h2>
 
-        <div className="space-y-4">
-          {/* Full Name */}
+        <form className="space-y-4" onSubmit={handleUpdate}>
+          {/* Username */}
           <div>
-            <h2 className="text-sm font-semibold text-teal-400">Full Name</h2>
-            {isEditing ? (
-              <input
-                type="text"
-                name="fullName"
-                value={user.fullName}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-              />
-            ) : (
-              <p className="text-lg text-gray-800">{user.fullName}</p>
-            )}
+            <label className="block text-sm font-medium text-teal-400">
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username || ""}
+              onChange={handleChange}
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            />
           </div>
 
-          {/* Email */}
+          {/* Email (read-only) */}
           <div>
-            <h2 className="text-sm font-semibold text-teal-400">Email</h2>
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={user.email}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-              />
-            ) : (
-              <p className="text-lg text-gray-800">{user.email}</p>
-            )}
+            <label className="block text-sm font-medium text-teal-400">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email || ""}
+              readOnly
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-100 cursor-not-allowed"
+            />
           </div>
 
-          {/* Phone */}
+          {/* Other profile fields (optional) */}
           <div>
-            <h2 className="text-sm font-semibold text-teal-400">
-              Phone Number
-            </h2>
-            {isEditing ? (
-              <input
-                type="tel"
-                name="phone"
-                value={user.phone}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-              />
-            ) : (
-              <p className="text-lg text-gray-800">{user.phone}</p>
-            )}
+            <label className="block text-sm font-medium text-teal-400">
+              Phone
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone || ""}
+              onChange={handleChange}
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            />
           </div>
+          {/* Download Resume */}
+          <button
+            type="button"
+            onClick={handleDownloadResume}
+            className="w-full mt-4 bg-blue-400 text-white py-3 rounded-md border-2 hover:shadow-md shadow-blue-200 hover:border-white hover:bg-blue-300 transition"
+          >
+            Download Resume
+          </button>
 
-          {/* Address */}
-          <div>
-            <h2 className="text-sm font-semibold text-teal-400">Address</h2>
-            {isEditing ? (
-              <textarea
-                name="address"
-                value={user.address}
-                onChange={handleChange}
-                className="w-full h-32 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                rows={3}
-              />
-            ) : (
-              <p className="text-lg text-gray-800">{user.address}</p>
-            )}
-          </div>
-        </div>
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full bg-teal-400 text-white py-3 rounded-md border-2 hover:shadow-md shadow-teal-200 hover:border-white hover:bg-teal-300 transition"
+          >
+            {saving ? "Saving..." : "Update Profile"}
+          </button>
+        </form>
 
-        {/* Buttons */}
-        <div className="mt-8 flex justify-between">
-          {isEditing ? (
-            <>
-              <button
-                className="px-6 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
-                onClick={handleSave}
-              >
-                Save
-              </button>
-              <button
-                className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
-                onClick={() => setIsEditing(false)}
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <button
-              className="px-6 py-2 bg-teal-400 text-white rounded-md hover:bg-teal-500 transition"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit
-            </button>
-          )}
-        </div>
-
-        {/* Logout Button */}
         <button
-          className="mt-6 w-full py-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
-          onClick={(e) => {
-            e.preventDefault();
-            if (confirm("Are you sure you want to logout?")) {
-          logout();
-          navigate("/", { replace: true }); // Back button won't return
-        }
-          }}
+          onClick={handleLogout}
+          className="w-full mt-4 bg-red-400 text-white py-3 rounded-md border-2 hover:shadow-md shadow-red-200 hover:border-white hover:bg-red-300 transition"
         >
           Logout
         </button>

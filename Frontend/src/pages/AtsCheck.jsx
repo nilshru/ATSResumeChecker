@@ -2,23 +2,101 @@ import React, { useState, useEffect } from "react";
 import { CloudUpload, FileText } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { extractTextFromFile } from "../utils/extractText";
 
 function AtsCheck() {
   const [jobDesc, setJobDesc] = useState("");
   const [file, setFile] = useState(null);
+  const [resumeText, setResumeText] = useState("");
+  const [score, setScore] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+
+  const { user, authFetch } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     AOS.init({ duration: 800, easing: "ease-in-out" });
   }, []);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  // 🔹 ATS + Gemini call
+  const callAtsScore = async (text) => {
+    if (!jobDesc.trim()) return;
+    setLoading(true);
+    setSuggestions([]);
+    try {
+      const data = await authFetch("/api/ats-score", {
+        method: "POST",
+        body: JSON.stringify({ resumeText: text, jobDesc }),
+      });
+
+      if (data.success) {
+        setScore(data.score);
+        // Gemini suggestions are returned only if user has credits
+        setSuggestions(data.suggestions || []);
+      } else {
+        alert(data.error || "Failed to calculate ATS score");
+      }
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setFile(e.dataTransfer.files[0]);
+  const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    try {
+      setFile(selectedFile);
+      const text = await extractTextFromFile(selectedFile);
+      setResumeText(text);
+      await callAtsScore(text);
+    } catch (err) {
+      alert(err.message);
+    }
   };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    if (!droppedFile) return;
+
+    try {
+      setFile(droppedFile);
+      const text = await extractTextFromFile(droppedFile);
+      setResumeText(text);
+      await callAtsScore(text);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  if (!user)
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+        <div className="text-center text-5xl">
+          Please login to use this feature
+        </div>
+        <button
+          className="bg-teal-400 hover:bg-teal-500 text-white px-4 py-2 rounded mt-4"
+          onClick={() => navigate("/login")}
+        >
+          Login
+        </button>
+      </div>
+    );
+
+  if (loading)
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+        <div className="text-center text-5xl">Please wait...</div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -26,34 +104,28 @@ function AtsCheck() {
         className="flex flex-col md:flex-row items-center justify-center w-full max-w-5xl mx-auto 
                    rounded-lg overflow-hidden bg-white shadow-lg p-4
                    border-2 border-teal-400 shadow-teal-200  bg-clip-border"
-        
         data-aos="fade-up"
       >
         {/* Upload Area */}
         <div
           className="flex flex-col items-center justify-center p-6 w-full md:w-1/2"
           onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            if (jobDesc.trim()) handleDrop(e);
-          }}
+          onDrop={(e) => handleDrop(e)}
         >
-          {/* Job Description Title */}
           <h2 className="text-lg font-semibold text-teal-600 mb-2 w-full text-left">
             Job Description
           </h2>
 
-          {/* Job Description Input */}
           <textarea
             className="w-full border border-teal-400 rounded-lg p-3 text-sm mb-4 
                        focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent 
                        shadow-sm"
             rows="5"
-            placeholder="Paste or type the job description here to analyze your resume compatibility..."
+            placeholder="Paste or type the job description here..."
             value={jobDesc}
             onChange={(e) => setJobDesc(e.target.value)}
           />
 
-          {/* File Upload Box */}
           <div
             className={`flex flex-col items-center justify-center p-6 rounded-lg w-full 
                        border-2 border-dashed transition-all ${
@@ -84,30 +156,12 @@ function AtsCheck() {
                 disabled={!jobDesc.trim()}
               />
             </label>
-
-            <button
-              className={`px-4 py-2 rounded-lg border text-sm ${
-                jobDesc.trim()
-                  ? "bg-teal-100 text-teal-600 border-teal-300 hover:bg-teal-200"
-                  : "bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed"
-              }`}
-              onClick={() =>
-                jobDesc.trim()
-                  ? alert("Google Drive integration baad me add hoga")
-                  : null
-              }
-              disabled={!jobDesc.trim()}
-            >
-              Upload from Google Drive
-            </button>
           </div>
         </div>
 
-        {/* Divider for PC & Mobile */}
-       
-<div className="hidden md:block w-px bg-gradient-to-b from-teal-400 to-cyan-400 mx-4 self-stretch"></div>
-
-<div className="block md:hidden h-px bg-gradient-to-r from-teal-400 to-cyan-400 my-4 w-full"></div>
+        {/* Divider */}
+        <div className="hidden md:block w-px bg-gradient-to-b from-teal-400 to-cyan-400 mx-4 self-stretch"></div>
+        <div className="block md:hidden h-px bg-gradient-to-r from-teal-400 to-cyan-400 my-4 w-full"></div>
 
         {/* ATS Result */}
         <div className="flex flex-col items-center justify-center p-6 w-full md:w-1/2">
@@ -117,7 +171,6 @@ function AtsCheck() {
             </p>
           ) : (
             <>
-              {/* File Info */}
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="text-teal-500" />
                 <span className="text-gray-700 font-medium text-sm">
@@ -126,19 +179,52 @@ function AtsCheck() {
               </div>
 
               {/* ATS Score */}
-              <div
-                className="w-20 h-20 rounded-full border-4 border-teal-500 flex items-center justify-center text-lg font-bold text-teal-600 mb-4 shadow-md"
-                data-aos="zoom-in"
-              >
-                85%
-              </div>
+              {score !== null && (
+                <div
+                  className="w-20 h-20 rounded-full border-4 border-teal-500 flex items-center justify-center text-lg font-bold text-teal-600 mb-4 shadow-md"
+                  data-aos="zoom-in"
+                >
+                  {score}%
+                </div>
+              )}
 
-              {/* Suggestions */}
-              <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
-                <li>Add more job-specific keywords</li>
-                <li>Improve summary section with achievements</li>
-                <li>Use consistent formatting for bullet points</li>
-              </ul>
+              {/* Gemini Suggestions */}
+              {suggestions.length > 0 && (
+  <div className="mt-2 w-full">
+    <h3 className="text-teal-600 font-semibold mb-2">Resume Qualify AI Suggestions</h3>
+    <ul className="list-disc list-inside text-gray-700 text-md space-y-1">
+      {suggestions.map((s, idx) => {
+        // Split by double quotes while keeping the quotes
+        const parts = s.split(/(".*?")/g);
+
+        return (
+          <li key={idx}>
+            {parts.map((part, i) =>
+              part.startsWith('"') && part.endsWith('"') ? (
+                <strong key={i}>{part}</strong>
+              ) : (
+                part
+              )
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+)}
+
+
+              {suggestions.length === 0 && (
+                <p className="mt-2 text-gray-500">
+                  No credits left for Gemini suggestions. Only ATS score is
+                  shown.
+                </p>
+              )}
+
+              {/* Debug: Resume Text */}
+              {/* <pre className="mt-4 p-2 bg-gray-100 text-xs overflow-auto max-h-40 w-full">
+                {resumeText}
+              </pre> */}
             </>
           )}
         </div>

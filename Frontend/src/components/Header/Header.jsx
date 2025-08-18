@@ -1,45 +1,80 @@
 import React, { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Header() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { user, profile } = useAuth(); // get user and profile from context
+
+  const firstName = (profile?.username || "").split(" ")[0];
 
   return (
-    <nav className="fixed top-0 left-0 z-50 flex items-center justify-between
+    <nav
+      className="fixed top-0 left-0 z-50 flex items-center justify-between
                     w-full px-5 sm:px-10 py-4 backdrop-blur-sm bg-white/70 
-                    border-b-2 shadow-xl shadow-teal-200/10 border-b-teal-400">
-      
+                    border-b-2 shadow-xl shadow-teal-200/10 border-b-teal-400"
+    >
       {/* Logo */}
       <Link to="/">
-      <div className="flex items-center">
-        <img src="/logo.png" alt="ATS" className="w-[30px] sm:w-[40px]" />
-        <span className="ml-2  text-xl sm:text-3xl  text- hidden sm:block" >
-          Resume Qualify
-        </span>
-      </div>
+        <div className="flex items-center">
+          <img src="/logo.png" alt="ATS" className="w-[30px] sm:w-[40px]" />
+          <span className="ml-2 text-xl lg:text-3xl hidden lg:block">
+            Resume Qualify
+          </span>
+        </div>
       </Link>
 
       {/* Desktop Nav */}
       <ul className="hidden sm:flex flex-row items-center">
         <li className="mx-1 sm:mx-4 text-[18px] sm:text-2xl hover:underline">
-          <NavLink to="/" className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? "text-teal-500" : "text-black"
+            }
+          >
             Home
           </NavLink>
         </li>
         <li className="mx-1 sm:mx-4 text-[18px] sm:text-2xl hover:underline">
-          <NavLink to="/atschecker" className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+          <NavLink
+            to="/atschecker"
+            className={({ isActive }) =>
+              isActive ? "text-teal-500" : "text-black"
+            }
+          >
             ATS Score
           </NavLink>
         </li>
         <li className="mx-1 sm:mx-4 text-[18px] sm:text-2xl hover:underline">
-          <NavLink to="/templates" className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+          <NavLink
+            to="/templates"
+            className={({ isActive }) =>
+              isActive ? "text-teal-500" : "text-black"
+            }
+          >
             Templates
           </NavLink>
         </li>
         <li className="mx-1 sm:mx-4 text-[18px] sm:text-2xl hover:underline">
-          <NavLink to="/profile" className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
-            Profile
-          </NavLink>
+          {user && profile?.username ? (
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                isActive ? "text-teal-500" : "text-black"
+              }
+            >
+              {firstName}
+            </NavLink>
+          ) : (
+            <button
+              onClick={() => navigate("/login")}
+              className="text-white bg-teal-400 py-1 px-4 rounded hover:bg-teal-500"
+            >
+              Login
+            </button>
+          )}
         </li>
       </ul>
 
@@ -50,16 +85,19 @@ function Header() {
           className="relative w-6 h-[18px] flex flex-col justify-between items-center group"
         >
           <span
-            className={`block h-[2px] w-full bg-teal-400 rounded transition-all duration-300 
-            ${isOpen ? "rotate-45 translate-y-[8px]" : ""}`}
+            className={`block h-[2px] w-full bg-teal-400 rounded transition-all duration-300 ${
+              isOpen ? "rotate-45 translate-y-[8px]" : ""
+            }`}
           ></span>
           <span
-            className={`block h-[2px] w-full bg-teal-400 rounded transition-all duration-300 
-            ${isOpen ? "opacity-0" : ""}`}
+            className={`block h-[2px] w-full bg-teal-400 rounded transition-all duration-300 ${
+              isOpen ? "opacity-0" : ""
+            }`}
           ></span>
           <span
-            className={`block h-[2px] w-full bg-teal-400 rounded transition-all duration-300 
-            ${isOpen ? "-rotate-45 -translate-y-[8px]" : ""}`}
+            className={`block h-[2px] w-full bg-teal-400 rounded transition-all duration-300 ${
+              isOpen ? "-rotate-45 -translate-y-[8px]" : ""
+            }`}
           ></span>
         </button>
       </div>
@@ -69,24 +107,57 @@ function Header() {
         <div className="absolute top-full left-0 w-full bg-white shadow-lg sm:hidden animate-slideDown">
           <ul className="flex flex-col items-start p-4">
             <li className="py-2 w-full">
-              <NavLink to="/" onClick={() => setIsOpen(false)} className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+              <NavLink
+                to="/"
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  isActive ? "text-teal-500" : "text-black"
+                }
+              >
                 Home
               </NavLink>
             </li>
             <li className="py-2 w-full">
-              <NavLink to="/atschecker" onClick={() => setIsOpen(false)} className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+              <NavLink
+                to="/atschecker"
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  isActive ? "text-teal-500" : "text-black"
+                }
+              >
                 ATS Score
               </NavLink>
             </li>
             <li className="py-2 w-full">
-              <NavLink to="/templates" onClick={() => setIsOpen(false)} className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
+              <NavLink
+                to="/templates"
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  isActive ? "text-teal-500" : "text-black"
+                }
+              >
                 Templates
               </NavLink>
             </li>
             <li className="py-2 w-full">
-              <NavLink to="/profile" onClick={() => setIsOpen(false)} className={({ isActive }) => isActive ? "text-teal-500" : "text-black"}>
-                Profile
-              </NavLink>
+              {user && profile?.username ? (
+                <NavLink
+                  to="/profile"
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    isActive ? "text-teal-500" : "text-black"
+                  }
+                >
+                  {profile?.username}
+                </NavLink>
+              ) : (
+                <button
+                  onClick={() => (setIsOpen(false), navigate("/login"))}
+                  className="text-white bg-teal-400 py-1 px-2 rounded hover:bg-teal-500"
+                >
+                  Login
+                </button>
+              )}
             </li>
           </ul>
         </div>

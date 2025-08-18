@@ -1,7 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 
 function SignUp() {
+  const { signup } = useAuth();
+  const navigate = useNavigate();
+
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      await signup({ email, password, username: fullname });
+      alert("Account created successfully!");
+      navigate("/login"); // redirect to login page
+    } catch (err) {
+      //console.error(err);
+      setError(err.response.data.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl shadow-teal-200 p-8 space-y-6">
@@ -9,13 +37,10 @@ function SignUp() {
           Create your account
         </h2>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Full Name */}
           <div>
-            <label
-              htmlFor="fullname"
-              className="block text-sm font-medium text-teal-400"
-            >
+            <label htmlFor="fullname" className="block text-sm font-medium text-teal-400">
               Full Name
             </label>
             <input
@@ -24,16 +49,15 @@ function SignUp() {
               type="text"
               autoComplete="name"
               required
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-teal-400"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-teal-400">
               Email address
             </label>
             <input
@@ -42,16 +66,15 @@ function SignUp() {
               type="email"
               autoComplete="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-teal-400"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-teal-400">
               Password
             </label>
             <input
@@ -60,25 +83,49 @@ function SignUp() {
               type="password"
               autoComplete="new-password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
           </div>
 
+          {/* Error */}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          {/* Submit Button */}
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-teal-400 text-white py-3 rounded-md border-2 hover:shadow-md shadow-teal-200 hover:border-white hover:bg-teal-300 transition"
+             style={loading ? { cursor: "not-allowed", backgroundColor: "gray"} : {}}
           >
-            Sign Up
+            {loading ? "Creating..." : "Sign Up"}
           </button>
+        </form>
 
-          {/* Divider */}
+        <p className="text-center text-sm text-black">
+          Already have an account?{" "}
+          <Link to="/login" className="font-semibold text-teal-400 hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default SignUp;
+
+
+{/* 
+          
           <div className="flex items-center justify-center gap-3">
             <hr className="flex-grow border-teal-300" />
             <span className="text-teal-400">or</span>
             <hr className="flex-grow border-teal-300" />
           </div>
 
-          {/* Google Sign-in Button */}
+         
           <button
             type="button"
             className="w-full text-teal-500 flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-md hover:border-teal-400 hover:shadow-md shadow-teal-200 hover:bg-gray-50 transition"
@@ -109,18 +156,4 @@ function SignUp() {
               />
             </svg>
             Sign in with Google
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-black">
-          Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-teal-400 hover:underline">
-            Sign in
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-export default SignUp;
+          </button> */}

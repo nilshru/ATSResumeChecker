@@ -7,13 +7,13 @@ import AtsCheck from "./pages/AtsCheck";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
-import { AuthContextProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import ResumeDetails from "./pages/ResumeDetails";
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthContextProvider>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
@@ -26,7 +26,7 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </AuthContextProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
