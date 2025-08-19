@@ -6,6 +6,9 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { extractTextFromFile } from "../utils/extractText";
 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
+
+// axios.defaults.baseURL = API_BASE;
 function AtsCheck() {
   const [jobDesc, setJobDesc] = useState("");
   const [file, setFile] = useState(null);
@@ -28,7 +31,7 @@ function AtsCheck() {
     setLoading(true);
     setSuggestions([]);
     try {
-      const data = await authFetch("/api/ats-score", {
+      const data = await authFetch(`${API_BASE}/api/ats-score`, {
         method: "POST",
         body: JSON.stringify({ resumeText: text, jobDesc }),
       });
