@@ -6,12 +6,12 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    proxy: {
-      "/api": {
-        target: "https://atsresumechecker.onrender.com",
-        changeOrigin: true,
-       // secure: false,
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "http://localhost:4000",
+    //     changeOrigin: true,
+    //    // secure: false,
+    //   },
+    // },
   },
 });

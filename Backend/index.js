@@ -3,6 +3,28 @@ require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
 const app = express();
+const cors = require("cors");
+
+app.use(cors());
+
+const whiteListedOrigins = [
+  "http://localhost:5173",
+  "https://resumequalify.netlify.app",
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Postman / server to server calls
+    if (whiteListedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // if you are sending cookies or auth headers
+};
+
+app.use(cors(corsOptions));
 
 const admin = require("firebase-admin");
 

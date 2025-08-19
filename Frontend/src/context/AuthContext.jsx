@@ -2,6 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
+
+axios.defaults.baseURL = API_BASE;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -140,4 +143,3 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
- 
