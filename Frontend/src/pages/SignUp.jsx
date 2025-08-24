@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import MainLoder from "../components/Loader/MainLoder";
 
 
 function SignUp() {
@@ -29,6 +30,14 @@ function SignUp() {
       setLoading(false);
     }
   };
+
+  if(loading){
+    return(
+      <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100">
+      <MainLoder/>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">

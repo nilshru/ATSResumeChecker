@@ -15,8 +15,7 @@ export function AuthProvider({ children }) {
   // Login
   // ------------------------------
   const login = async ({ email, password }) => {
-    setLoading(true);
-
+ 
     const res = await axios.post("/api/login", { email, password });
     const { idToken, refreshToken, uid, profile: profileData } = res.data;
 
@@ -25,7 +24,7 @@ export function AuthProvider({ children }) {
 
     setUser({ uid });
     setProfile(profileData);
-    setLoading(false);
+    
     return { uid, profile: profileData };
   };
 
@@ -33,7 +32,7 @@ export function AuthProvider({ children }) {
   // Signup
   // ------------------------------
   const signup = async ({ email, password, username }) => {
-    setLoading(true);
+    
     const res = await axios.post("/api/signup", { email, password, username });
     setLoading(false);
     return res.data;
@@ -142,6 +141,7 @@ export function AuthProvider({ children }) {
         user,
         profile,
         loading,
+        setLoading,
         login,
         signup,
         logout,

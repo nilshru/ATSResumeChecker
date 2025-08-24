@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import MainLoder from "../components/Loader/MainLoder";
 
 function Login() {
   const { login, user } = useAuth();
@@ -8,6 +9,7 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -30,6 +32,17 @@ function Login() {
       setLoading(false);
     }
   };
+
+  
+  
+
+  if (loading){
+    return(
+      <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100">
+        <MainLoder/>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -58,20 +71,22 @@ function Login() {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <label htmlFor="password" className="block text-sm font-medium text-teal-400">
               Password
             </label>
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
+            <button
+              type="button" className="absolute mt-3 right-2 top-1/2 transform -translate-y-1/2 bg-transparent cursor-pointer" onClick={() => setShowPassword(!showPassword)}>{showPassword ? "👁" : "👁"}</button>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 function MainLoder() {
   return (
-  <div class="mainLoader"></div>
+  <div className="mainLoader"></div>
   )
 }
 
