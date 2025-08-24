@@ -44,7 +44,7 @@ function Hero() {
             grammar, ATS keywords & rank instantly
           </p>
 
-          <div className="flex items-start w-full mt-5  sm:mt-0 gap-4 sm:gap-20">
+          <div className="flex items-start w-full mt-5  sm:mt-0 gap-2 sm:gap-20">
             <Link to="/atschecker">
             <button
               className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm
@@ -60,9 +60,9 @@ function Hero() {
               className="rounded-lg font-bold text-sm sm:text-xl backdrop-blur-sm 
                 bg-white/60 hover:shadow-lg border-2 shadow-md hover:bg-white border-teal-400 
                 text-teal-400 py-2 px-6 sm:px-8 mt-5 sm:mt-20 shadow-teal-300/50 
-                min-w-[140px] sm:min-w-[160px] text-center"
+                min-w-[145px] sm:min-w-[160px] text-center"
             >
-              Try Sample
+              Build Resume
             </button>
             </Link>
           </div>

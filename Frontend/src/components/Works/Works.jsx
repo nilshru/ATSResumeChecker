@@ -10,14 +10,14 @@ function Works() {
 
   const steps = [
     {
-      icon: <Upload size={24} className="text-teal-300" />,
-      title: "Upload Resume",
-      desc: "Select your resume in PDF or DOCX format to start the analysis.",
-    },
-    {
       icon: <FileText size={24} className="text-teal-300" />,
       title: "Paste Job Description",
       desc: "Provide the target job description for accurate ATS scoring.",
+    },
+    {
+      icon: <Upload size={24} className="text-teal-300" />,
+      title: "Upload Resume",
+      desc: "Select your resume in PDF or DOCX format to start the analysis.",
     },
     {
       icon: <Brain size={24} className="text-teal-300" />,
@@ -26,8 +26,8 @@ function Works() {
     },
     {
       icon: <Download size={24} className="text-teal-300" />,
-      title: "Download Report",
-      desc: "Get your detailed score and suggestions in a clean PDF format.",
+      title: "Get Results",
+      desc: "Get ATS-friendly resume suggestions in seconds.",
     },
   ];
 

@@ -31,9 +31,9 @@ function Features() {
     },
     {
       icon: <FileDown size={24} className="text-primary" />,
-      title: "Multiple Export Options",
+      title: "Easy Download",
       description:
-        "Download your resume as PDF, DOCX, or share a direct link with your potential employers.",
+        "Download your resume as PDF, share it with your potential employers.",
     },
   ];
 
