@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { CloudUpload, FileText } from "lucide-react";
-import AOS from "aos";
+
 import "aos/dist/aos.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { extractTextFromFile } from "../utils/extractText";
+import AtsLoader from "../components/Loader/AtsLoader";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
 
@@ -21,9 +22,7 @@ function AtsCheck() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    AOS.init({ duration: 800, easing: "ease-in-out" });
-  }, []);
+  
 
   // 🔹 ATS + Gemini call
   const callAtsScore = async (text) => {
@@ -108,7 +107,7 @@ function AtsCheck() {
   if (loading)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-        <div className="text-center text-5xl">Please wait...</div>
+        <AtsLoader />
       </div>
     );
 
@@ -118,7 +117,7 @@ function AtsCheck() {
         className="flex flex-col md:flex-row items-center justify-center w-full max-w-5xl mx-auto 
                    rounded-lg overflow-hidden bg-white shadow-lg p-4
                    border-2 border-teal-400 shadow-teal-200  bg-clip-border"
-        data-aos="fade-up"
+        
       >
         {/* Upload Area */}
         <div

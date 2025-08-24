@@ -104,6 +104,7 @@ export function AuthProvider({ children }) {
   // On App Start → fetch profile
   // ------------------------------
   useEffect(() => {
+   
     const token = localStorage.getItem("idToken");
     if (!token) {
       setLoading(false);
