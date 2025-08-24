@@ -51,16 +51,23 @@ function AtsCheck() {
   };
 
   const handleFileChange = async (e) => {
+   
+    e.preventDefault();
+    
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
     try {
+      setLoading(true);
       setFile(selectedFile);
       const text = await extractTextFromFile(selectedFile);
       setResumeText(text);
       await callAtsScore(text);
     } catch (err) { 
       alert(err.message);
+    } 
+    finally {
+      setLoading(false);
     }
   };
 
@@ -70,12 +77,16 @@ function AtsCheck() {
     if (!droppedFile) return;
 
     try {
+      setLoading(true);
       setFile(droppedFile);
       const text = await extractTextFromFile(droppedFile);
       setResumeText(text);
       await callAtsScore(text);
     } catch (err) {
       alert(err.message);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
