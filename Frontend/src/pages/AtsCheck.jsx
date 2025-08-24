@@ -27,9 +27,9 @@ function AtsCheck() {
 
   // 🔹 ATS + Gemini call
   const callAtsScore = async (text) => {
-    if (!jobDesc.trim()) return;
     setLoading(true);
-    setSuggestions([]);
+    if (!jobDesc.trim()) return;
+    
     try {
       const data = await authFetch(`${API_BASE}/api/ats-score`, {
         method: "POST",
@@ -217,12 +217,12 @@ function AtsCheck() {
 )}
 
 
-              {suggestions.length === 0 && (
+              {suggestions.length == 0 ? (
                 <p className="mt-2 text-gray-500">
-                  No credits left for Gemini suggestions. Only ATS score is
+                  No credits left for <span className="font-semibold">Resume Qualify AI</span> suggestions. Only ATS score is
                   shown.
                 </p>
-              )}
+              ) : null}
 
               {/* Debug: Resume Text */}
               {/* <pre className="mt-4 p-2 bg-gray-100 text-xs overflow-auto max-h-40 w-full">

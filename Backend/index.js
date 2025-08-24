@@ -63,6 +63,10 @@ const verifyToken = async (req, res, next) => {
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
+/*---------------------- home page -------------------- */
+app.get("/", (req, res) => {
+  res.send("Hello From ResumeQualify API"); //TESTING PURPOSE
+});
 
 /* -------------------- Signup -------------------- */
 app.post("/api/signup", async (req, res) => {
