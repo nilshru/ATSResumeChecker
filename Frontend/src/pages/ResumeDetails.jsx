@@ -16,6 +16,7 @@ import SkillsDetails from "../components/resumeSteps/SkillsDetails";
 import ProjectsDetails from "../components/resumeSteps/ProjectsDetails";
 import AchievementsDetails from "../components/resumeSteps/AchievementsDetails";
 import ResumePreview from "../components/resumeSteps/ResumePreview";
+import MainLoder from "../components/Loader/MainLoder";
 
 function ResumeDetails() { 
   const { id } = useParams();
@@ -156,6 +157,13 @@ function ResumeDetails() {
       setLoadingDownload(false);
     }
   };
+  if(loadingDownload){
+    return(
+      <div className="flex justify-center items-center h-screen">
+      <MainLoder/>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">

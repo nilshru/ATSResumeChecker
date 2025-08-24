@@ -15,6 +15,8 @@ export function AuthProvider({ children }) {
   // Login
   // ------------------------------
   const login = async ({ email, password }) => {
+    setLoading(true);
+
     const res = await axios.post("/api/login", { email, password });
     const { idToken, refreshToken, uid, profile: profileData } = res.data;
 
@@ -23,6 +25,7 @@ export function AuthProvider({ children }) {
 
     setUser({ uid });
     setProfile(profileData);
+    setLoading(false);
     return { uid, profile: profileData };
   };
 
@@ -30,7 +33,9 @@ export function AuthProvider({ children }) {
   // Signup
   // ------------------------------
   const signup = async ({ email, password, username }) => {
+    setLoading(true);
     const res = await axios.post("/api/signup", { email, password, username });
+    setLoading(false);
     return res.data;
   };
 
@@ -90,13 +95,19 @@ export function AuthProvider({ children }) {
   // Update Profile
   // ------------------------------
   const updateProfile = async (data) => {
+
     const token = localStorage.getItem("idToken");
-    if (!token) throw new Error("User not authenticated");
+    
+    if (!token){
+     
+      throw new Error("User not authenticated")
+    };
 
     const res = await axios.patch("/api/profile", data, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setProfile(res.data.profile);
+    
     return res.data.profile;
   };
 

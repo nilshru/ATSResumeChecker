@@ -20,7 +20,7 @@ function SignUp() {
 
     try { 
       await signup({ email, password, username: fullname });
-      alert("Account created successfully!");
+      alert("Account created successfully! Please login.");
       navigate("/login"); // redirect to login page
     } catch (err) {
       //console.error(err);
