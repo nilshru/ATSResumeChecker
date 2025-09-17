@@ -84,7 +84,7 @@ app.post("/api/signup", async (req, res) => {
       uid: userRecord.uid,
       email,
       username: username,
-      credit: 2,
+      credit: 10,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
