@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.14.0",
+    "@sendgrid/mail": "^8.1.6",
     "@sparticuz/chromium": "^141.0.0",
     "axios": "^1.7.2",
     "cloudinary": "^2.8.0",

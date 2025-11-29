@@ -50,7 +50,7 @@ const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 app.use(express.json({ limit: "5mb" }));
@@ -73,24 +73,23 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-
 /*---------------------- home page -------------------- */
 app.get("/", (req, res) => {
   res.send("Hello From ResumeQualify API"); //TESTING PURPOSE
 });
 
-
 /* -------------------- Email -------------------- */
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
 
 function generateResumeHTML(data) {
   // Destructure skills with defaults
@@ -100,7 +99,7 @@ function generateResumeHTML(data) {
   const tools = skills.tools || [];
   const databases = skills.databases || [];
 
-return `
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -182,117 +181,198 @@ return `
 <div class="header-info">
   ${[
     data.personal.address,
-    data.personal.email ? `<a href="mailto:${data.personal.email}">${data.personal.email}</a>` : null,
+    data.personal.email
+      ? `<a href="mailto:${data.personal.email}">${data.personal.email}</a>`
+      : null,
     data.personal.phone,
-    data.personal.website ? `<a href="${data.personal.website}" target="_blank">${data.personal.website.replace(/^https?:\/\//, '')}</a>` : null
+    data.personal.website
+      ? `<a href="${
+          data.personal.website
+        }" target="_blank">${data.personal.website.replace(
+          /^https?:\/\//,
+          ""
+        )}</a>`
+      : null,
   ]
     .filter(Boolean)
     .join(" | ")}
   <br/>
   ${[
-      data.personal.linkedin ? `<a href="${data.personal.linkedin}" target="_blank">linkedin.com/in/${data.personal.linkedin.split('/').pop()}</a>` : null,
-      data.personal.github ? `<a href="${data.personal.github}" target="_blank">github.com/${data.personal.github.split('/').pop()}</a>` : null
+    data.personal.linkedin
+      ? `<a href="${
+          data.personal.linkedin
+        }" target="_blank">linkedin.com/in/${data.personal.linkedin
+          .split("/")
+          .pop()}</a>`
+      : null,
+    data.personal.github
+      ? `<a href="${
+          data.personal.github
+        }" target="_blank">github.com/${data.personal.github
+          .split("/")
+          .pop()}</a>`
+      : null,
   ]
     .filter(Boolean)
     .join(" | ")}
 </div>
 
-${data.summary ? `
+${
+  data.summary
+    ? `
 <h2>Professional Summary</h2>
 <div style="text-align: justify;">${data.summary}</div>
-` : ''}
+`
+    : ""
+}
 
-${data.education && data.education.length > 0 ? `
+${
+  data.education && data.education.length > 0
+    ? `
 <h2>Education</h2>
-${data.education.map(edu => `
+${data.education
+  .map(
+    (edu) => `
   <div style="margin-bottom: 6px;">
     <div class="section-header">
       <span><span class="bold">${edu.school}</span>, ${edu.degree}</span>
       <span>${edu.start} – ${edu.end}</span>
     </div>
-    ${edu.grade ? `<ul><li>${edu.grade}</li></ul>` : ''}
+    ${edu.grade ? `<ul><li>${edu.grade}</li></ul>` : ""}
   </div>
-`).join('')}
-` : ''}
+`
+  )
+  .join("")}
+`
+    : ""
+}
 
-${data.projects && data.projects.length > 0 ? `
+${
+  data.projects && data.projects.length > 0
+    ? `
 <h2>Projects</h2>
-${data.projects.map(proj => `
+${data.projects
+  .map(
+    (proj) => `
   <div style="margin-bottom: 10px;">
     <div class="section-header">
-      <span class="bold">${proj.title}${proj.description ? ` - ${proj.description}` : ''}</span>
+      <span class="bold">${proj.title}${
+      proj.description ? ` - ${proj.description}` : ""
+    }</span>
       <span>
-        ${proj.live ? `<a href="${proj.live}" target="_blank">Live</a>` : ''}
-        ${proj.live && proj.github ? ' | ' : ''}
-        ${proj.github ? `<a href="${proj.github}" target="_blank">GitHub</a>` : ''}
+        ${proj.live ? `<a href="${proj.live}" target="_blank">Live</a>` : ""}
+        ${proj.live && proj.github ? " | " : ""}
+        ${
+          proj.github
+            ? `<a href="${proj.github}" target="_blank">GitHub</a>`
+            : ""
+        }
       </span>
     </div>
     
     <ul>
-      ${proj.tools ? `
+      ${
+        proj.tools
+          ? `
       <li>
         <span class="bold">Tools Used:</span> ${proj.tools}
       </li>
-      ` : ''}
+      `
+          : ""
+      }
       
-      ${proj.points && proj.points.length > 0 ? 
-        proj.points.map(pt => `<li>${pt}</li>`).join('') 
-      : ''}
+      ${
+        proj.points && proj.points.length > 0
+          ? proj.points.map((pt) => `<li>${pt}</li>`).join("")
+          : ""
+      }
     </ul>
   </div>
-`).join('')}
-` : ''}
+`
+  )
+  .join("")}
+`
+    : ""
+}
 
-${data.experience && data.experience.length > 0 ? `
+${
+  data.experience && data.experience.length > 0
+    ? `
 <h2>Experience</h2>
-${data.experience.map(exp => `
+${data.experience
+  .map(
+    (exp) => `
   <div style="margin-bottom: 10px;">
     <div class="section-header">
       <span><span class="bold">${exp.company}</span>, ${exp.role}</span>
       <span>${exp.start} – ${exp.end}</span>
     </div>
-    ${exp.points && exp.points.length > 0 ? `
+    ${
+      exp.points && exp.points.length > 0
+        ? `
     <ul>
-      ${exp.points.map(pt => `<li>${pt}</li>`).join('')}
+      ${exp.points.map((pt) => `<li>${pt}</li>`).join("")}
     </ul>
-    ` : ''}
+    `
+        : ""
+    }
   </div>
-`).join('')}
-` : ''}
+`
+  )
+  .join("")}
+`
+    : ""
+}
 
-${skills && (Array.isArray(skills) ? skills.length > 0 : Object.keys(skills).length > 0) ? `
+${
+  skills &&
+  (Array.isArray(skills) ? skills.length > 0 : Object.keys(skills).length > 0)
+    ? `
 <h2>Skills</h2>
 <ul>
   ${
-    !Array.isArray(skills) 
+    !Array.isArray(skills)
       ? Object.keys(skills)
-          .filter(key => Array.isArray(skills[key]) && skills[key].length > 0)
-          .map(key => {
+          .filter((key) => Array.isArray(skills[key]) && skills[key].length > 0)
+          .map((key) => {
             const title = key.charAt(0).toUpperCase() + key.slice(1);
             return `
               <li>
                 <span class="bold">${title}:</span> ${skills[key].join(", ")}.
               </li>
             `;
-          }).join("")
-      : `<li><span class="bold">Technical Skills:</span> ${skills.join(", ")}.</li>`
+          })
+          .join("")
+      : `<li><span class="bold">Technical Skills:</span> ${skills.join(
+          ", "
+        )}.</li>`
   }
 </ul>
-` : ''}
+`
+    : ""
+}
 
-${data.achievements && data.achievements.length > 0 ? `
+${
+  data.achievements && data.achievements.length > 0
+    ? `
 <h2>Achievements & Certifications</h2>
 <ul>
-  ${data.achievements.map(ach => `
+  ${data.achievements
+    .map(
+      (ach) => `
     <li>
       <div style="display: flex; justify-content: space-between;">
         <span><span class="bold">${ach.title}</span> – ${ach.issuer}</span>
-        ${ach.link ? `<a href="${ach.link}" target="_blank">Link</a>` : ''}
+        ${ach.link ? `<a href="${ach.link}" target="_blank">Link</a>` : ""}
       </div>
     </li>
-  `).join('')}
+  `
+    )
+    .join("")}
 </ul>
-` : ''}
+`
+    : ""
+}
 
 </body>
 </html>
@@ -301,25 +381,24 @@ ${data.achievements && data.achievements.length > 0 ? `
 
 module.exports = generateResumeHTML;
 
-const html_to_pdf = require('html-pdf-node');
+const html_to_pdf = require("html-pdf-node");
 
 async function generatePDFfromHTML(html) {
   const file = { content: html };
 
   const options = {
-    format: 'A4',
+    format: "A4",
     margin: {
-      top: '10mm',
-      bottom: '10mm',
-      left: '10mm',
-      right: '10mm'
-    }
+      top: "10mm",
+      bottom: "10mm",
+      left: "10mm",
+      right: "10mm",
+    },
   };
 
   const pdfBuffer = await html_to_pdf.generatePdf(file, options);
   return pdfBuffer;
 }
-
 
 app.post("/api/send-resume", verifyToken, async (req, res) => {
   try {
@@ -332,7 +411,8 @@ app.post("/api/send-resume", verifyToken, async (req, res) => {
 
     // Get user profile
     const snap = await db.collection("users").doc(uid).get();
-    if (!snap.exists) return res.status(404).json({ error: "Profile not found" });
+    if (!snap.exists)
+      return res.status(404).json({ error: "Profile not found" });
 
     const profile = snap.data();
     const userEmail = profile.email;
@@ -342,36 +422,66 @@ app.post("/api/send-resume", verifyToken, async (req, res) => {
     const pdfBytes = await generatePDFfromHTML(html); // returns Buffer
 
     /* ------------------------ 2. Email Send ------------------------ */
-    await transporter.sendMail({
-      from: `ResumeQualify <${process.env.EMAIL_USER}>`,
-      to: userEmail,
-      subject: "Your Resume from ResumeQualify",
-      text: "Your resume is attached.",
-      attachments: [
-        {
-          filename: `${profile.username}_Resume.pdf`,
-          content: pdfBytes,
-        },
-      ],
-    });
+    /* ------------------------ 2. Email Send (SENDGRID) ------------------------ */
+await sgMail.send({
+  to: userEmail,
+  from: {
+    name: "ResumeQualify",
+    email: process.env.EMAIL_FROM, // resumequalify.ats@gmail.com
+  },
+  replyTo: "support@resumequalify.ats.gmail.com", // ya wahi from
+  subject: "Your ATS-Optimized Resume is Ready ✅",
+  text: `Hi ${profile.username || ""},
 
+Your resume has been generated successfully.
+
+You can find it attached with this email.
+
+Thanks for using ResumeQualify!`,
+  html: `
+    <p>Hi ${profile.username || ""},</p>
+    <p>Your resume has been generated successfully. You can find it attached with this email.</p>
+    <p>Thanks for using <b>ResumeQualify</b>!</p>
+    <hr />
+    <p style="font-size:12px;color:#555;">
+      You are receiving this email because you used ResumeQualify to generate a resume.
+    </p>
+  `,
+  attachments: [
+    {
+      content: Buffer.from(pdfBytes).toString("base64"),
+      filename: `${profile.username}_Resume.pdf`,
+      type: "application/pdf",
+      disposition: "attachment",
+      encoding: "base64",
+    },
+  ],
+});
+
+
+ 
     /* ------------------------ 3. Cloudinary Upload (FIXED) ------------------------ */
 
     // Convert buffer to base64
-    const base64PDF = `data:application/pdf;base64,${pdfBytes.toString("base64")}`;
+    const base64PDF = `data:application/pdf;base64,${pdfBytes.toString(
+      "base64"
+    )}`;
 
     const uploadResult = await cloudinary.uploader.upload(base64PDF, {
       folder: "resumequalify_resumes",
       public_id: `resume_${uid}_${Date.now()}`,
-      resource_type: "raw",       // RAW for PDF
-      access_mode: "public",      // PUBLIC URL
-      format: "pdf"               // Ensure PDF format
+      resource_type: "raw", // RAW for PDF
+      access_mode: "public", // PUBLIC URL
+      format: "pdf", // Ensure PDF format
     });
 
     // Save URL to Firestore
-    await db.collection("users").doc(uid).set({
-      resumePdf: uploadResult.secure_url
-    }, { merge: true });
+    await db.collection("users").doc(uid).set(
+      {
+        resumePdf: uploadResult.secure_url,
+      },
+      { merge: true }
+    );
 
     /* ------------------------ 4. Response ------------------------ */
     res.json({
@@ -379,7 +489,6 @@ app.post("/api/send-resume", verifyToken, async (req, res) => {
       cloudinaryUrl: uploadResult.secure_url,
       message: "Resume emailed & uploaded successfully!",
     });
-
   } catch (err) {
     console.error("PDF Generation Error:", err);
     res.status(500).json({
@@ -388,11 +497,6 @@ app.post("/api/send-resume", verifyToken, async (req, res) => {
     });
   }
 });
-
-
-
-
-
 
 // app.post("/api/send-resume", verifyToken, async (req, res) => {
 //   try {
@@ -440,7 +544,6 @@ app.post("/api/send-resume", verifyToken, async (req, res) => {
 //     res.status(500).json({ error: "Failed to send resume", details: err.message });
 //   }
 // });
-
 
 /* -------------------- Signup -------------------- */
 app.post("/api/signup", async (req, res) => {
@@ -532,14 +635,12 @@ app.get("/api/profile", verifyToken, async (req, res) => {
 
     res.json({
       uid,
-      ...snap.data()
+      ...snap.data(),
     });
-
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
-
 
 app.patch("/api/profile", verifyToken, async (req, res) => {
   try {
