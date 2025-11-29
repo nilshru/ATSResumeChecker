@@ -9,13 +9,21 @@
   },
   "dependencies": {
     "@google/genai": "^1.14.0",
+    "@sparticuz/chromium": "^141.0.0",
     "axios": "^1.7.2",
+    "cloudinary": "^2.8.0",
     "compromise": "^14.14.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase-admin": "^12.5.0",
-    "natural": "^6.6.4"
+    "html-pdf": "^3.0.1",
+    "html-pdf-node": "^1.0.8",
+    "natural": "^6.6.4",
+    "nodemailer": "^7.0.11",
+    "pdf-lib": "^1.17.1",
+    "puppeteer-core": "^24.31.0",
+    "wkhtmltopdf": "^0.4.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

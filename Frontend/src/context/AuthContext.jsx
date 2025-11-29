@@ -11,12 +11,21 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ------------------------------
-  // Login
-  // ------------------------------
+  // ------------------------------ SIGNUP ------------------------------
+  const signup = async ({ email, password, username }) => {
+    const res = await axios.post("/api/signup", {
+      email,
+      password,
+      username,
+    });
+
+    return res.data; // return profile or message
+  };
+
+  // ------------------------------ LOGIN ------------------------------
   const login = async ({ email, password }) => {
- 
     const res = await axios.post("/api/login", { email, password });
+
     const { idToken, refreshToken, uid, profile: profileData } = res.data;
 
     localStorage.setItem("idToken", idToken);
@@ -24,23 +33,11 @@ export function AuthProvider({ children }) {
 
     setUser({ uid });
     setProfile(profileData);
-    
+
     return { uid, profile: profileData };
   };
 
-  // ------------------------------
-  // Signup
-  // ------------------------------
-  const signup = async ({ email, password, username }) => {
-    
-    const res = await axios.post("/api/signup", { email, password, username });
-    setLoading(false);
-    return res.data;
-  };
-
-  // ------------------------------
-  // Logout
-  // ------------------------------
+  // ------------------------------ LOGOUT ------------------------------
   const logout = () => {
     setUser(null);
     setProfile(null);
@@ -48,73 +45,71 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("refreshToken");
   };
 
-  // ------------------------------
-  // Authenticated Fetch
-  // ------------------------------
-  const authFetch = async (url, options = {}) => {
-    let token = localStorage.getItem("idToken");
-    if (!token) throw new Error("User not authenticated");
-
-    let res = await fetch(url, {
-      ...options,
-      headers: {
-        ...(options.headers || {}),
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (res.status === 401) {
-      // Token expired → refresh from backend
+  // ------------------------------ AUTO REFRESH TOKEN ------------------------------
+  const refreshIdToken = async () => {
+    try {
       const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) {
-        logout();
-        throw new Error("Session expired");
+      if (!refreshToken) return logout();
+
+      const res = await axios.post("/api/refreshToken", { refreshToken });
+
+      localStorage.setItem("idToken", res.data.idToken);
+      return res.data.idToken;
+    } catch (err) {
+      logout();
+      return null;
+    }
+  };
+
+  // ------------------------------ AUTH FETCH ------------------------------
+  const authFetch = async (url, options = {}) => {
+    try {
+      let token = localStorage.getItem("idToken");
+
+      let res = await fetch(url, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.status !== 401) {
+        // normal response
+        return await safeJson(res);
       }
 
-      const refreshRes = await axios.post("/api/refreshToken", { refreshToken });
-      const { idToken: newToken } = refreshRes.data;
-      localStorage.setItem("idToken", newToken);
+      // token expired → refresh
+      token = await refreshIdToken();
+      if (!token) throw new Error("Session expired");
 
-      // retry request with new token
+      // retry request
       res = await fetch(url, {
         ...options,
         headers: {
           ...(options.headers || {}),
-          Authorization: `Bearer ${newToken}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+
+      return await safeJson(res);
+    } catch (err) {
+      throw err;
     }
-
-    return await res.json();
   };
 
-  // ------------------------------
-  // Update Profile
-  // ------------------------------
-  const updateProfile = async (data) => {
-
-    const token = localStorage.getItem("idToken");
-    
-    if (!token){
-     
-      throw new Error("User not authenticated")
-    };
-
-    const res = await axios.patch("/api/profile", data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setProfile(res.data.profile);
-    
-    return res.data.profile;
+  const safeJson = async (res) => {
+    try {
+      return await res.json();
+    } catch {
+      return {};
+    }
   };
 
-  // ------------------------------
-  // On App Start → fetch profile
-  // ------------------------------
+  // ------------------------------ LOAD PROFILE ON START ------------------------------
   useEffect(() => {
-   
     const token = localStorage.getItem("idToken");
     if (!token) {
       setLoading(false);
@@ -129,9 +124,7 @@ export function AuthProvider({ children }) {
         setUser({ uid: res.data.uid });
         setProfile(res.data);
       })
-      .catch(() => {
-        logout();
-      })
+      .catch(() => logout())
       .finally(() => setLoading(false));
   }, []);
 
@@ -141,11 +134,9 @@ export function AuthProvider({ children }) {
         user,
         profile,
         loading,
-        setLoading,
+        signup,   // <-- added here
         login,
-        signup,
         logout,
-        updateProfile,
         authFetch,
       }}
     >

@@ -45,6 +45,14 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -56,17 +64,383 @@ const verifyToken = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ error: "No token provided" });
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = await admin.auth().verifyIdToken(token, false);
+
     req.user = decoded;
     next();
   } catch (err) {
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
+
+
 /*---------------------- home page -------------------- */
 app.get("/", (req, res) => {
   res.send("Hello From ResumeQualify API"); //TESTING PURPOSE
 });
+
+
+/* -------------------- Email -------------------- */
+const nodemailer = require("nodemailer");
+
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+function generateResumeHTML(data) {
+  // Destructure skills with defaults
+  const skills = data.skills || {};
+  const languages = skills.languages || [];
+  const frameworks = skills.frameworks || [];
+  const tools = skills.tools || [];
+  const databases = skills.databases || [];
+
+return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>${data.personal.name} – Resume</title>
+
+<style>
+  /* Base Styles */
+  body {
+    font-family: Cambria, Georgia, "Times New Roman", serif;
+    margin: 40px 50px;
+    color: #000;
+    line-height: 1.4; 
+    font-size: 11pt;
+  }
+
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  .header-info {
+    text-align: center;
+    font-size: 10pt;
+    margin-bottom: 15px;
+    color: #000;
+  }
+  
+  h2 {
+    font-size: 14pt;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    border-bottom: 1px solid #000; 
+    padding-bottom: 2px;
+    text-align: left;
+    color: #000;
+  }
+
+  /* Flex Layout for Headers */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+    font-size: 11pt;
+  }
+
+  /* List Styling - Indentation Badhaya Hai (Tab Space) */
+  ul {
+    margin: 2px 0 8px 0; 
+    padding-left: 35px; /* Increased to approx 1 Tab space */
+  }
+  
+  li {
+    margin-bottom: 2px;
+  }
+
+  .bold { font-weight: bold; }
+</style>
+
+</head>
+<body>
+
+<h1>${data.personal.name}</h1>
+
+<div class="header-info">
+  ${[
+    data.personal.address,
+    data.personal.email ? `<a href="mailto:${data.personal.email}">${data.personal.email}</a>` : null,
+    data.personal.phone,
+    data.personal.website ? `<a href="${data.personal.website}" target="_blank">${data.personal.website.replace(/^https?:\/\//, '')}</a>` : null
+  ]
+    .filter(Boolean)
+    .join(" | ")}
+  <br/>
+  ${[
+      data.personal.linkedin ? `<a href="${data.personal.linkedin}" target="_blank">linkedin.com/in/${data.personal.linkedin.split('/').pop()}</a>` : null,
+      data.personal.github ? `<a href="${data.personal.github}" target="_blank">github.com/${data.personal.github.split('/').pop()}</a>` : null
+  ]
+    .filter(Boolean)
+    .join(" | ")}
+</div>
+
+${data.summary ? `
+<h2>Professional Summary</h2>
+<div style="text-align: justify;">${data.summary}</div>
+` : ''}
+
+${data.education && data.education.length > 0 ? `
+<h2>Education</h2>
+${data.education.map(edu => `
+  <div style="margin-bottom: 6px;">
+    <div class="section-header">
+      <span><span class="bold">${edu.school}</span>, ${edu.degree}</span>
+      <span>${edu.start} – ${edu.end}</span>
+    </div>
+    ${edu.grade ? `<ul><li>${edu.grade}</li></ul>` : ''}
+  </div>
+`).join('')}
+` : ''}
+
+${data.projects && data.projects.length > 0 ? `
+<h2>Projects</h2>
+${data.projects.map(proj => `
+  <div style="margin-bottom: 10px;">
+    <div class="section-header">
+      <span class="bold">${proj.title}${proj.description ? ` - ${proj.description}` : ''}</span>
+      <span>
+        ${proj.live ? `<a href="${proj.live}" target="_blank">Live</a>` : ''}
+        ${proj.live && proj.github ? ' | ' : ''}
+        ${proj.github ? `<a href="${proj.github}" target="_blank">GitHub</a>` : ''}
+      </span>
+    </div>
+    
+    <ul>
+      ${proj.tools ? `
+      <li>
+        <span class="bold">Tools Used:</span> ${proj.tools}
+      </li>
+      ` : ''}
+      
+      ${proj.points && proj.points.length > 0 ? 
+        proj.points.map(pt => `<li>${pt}</li>`).join('') 
+      : ''}
+    </ul>
+  </div>
+`).join('')}
+` : ''}
+
+${data.experience && data.experience.length > 0 ? `
+<h2>Experience</h2>
+${data.experience.map(exp => `
+  <div style="margin-bottom: 10px;">
+    <div class="section-header">
+      <span><span class="bold">${exp.company}</span>, ${exp.role}</span>
+      <span>${exp.start} – ${exp.end}</span>
+    </div>
+    ${exp.points && exp.points.length > 0 ? `
+    <ul>
+      ${exp.points.map(pt => `<li>${pt}</li>`).join('')}
+    </ul>
+    ` : ''}
+  </div>
+`).join('')}
+` : ''}
+
+${skills && (Array.isArray(skills) ? skills.length > 0 : Object.keys(skills).length > 0) ? `
+<h2>Skills</h2>
+<ul>
+  ${
+    !Array.isArray(skills) 
+      ? Object.keys(skills)
+          .filter(key => Array.isArray(skills[key]) && skills[key].length > 0)
+          .map(key => {
+            const title = key.charAt(0).toUpperCase() + key.slice(1);
+            return `
+              <li>
+                <span class="bold">${title}:</span> ${skills[key].join(", ")}.
+              </li>
+            `;
+          }).join("")
+      : `<li><span class="bold">Technical Skills:</span> ${skills.join(", ")}.</li>`
+  }
+</ul>
+` : ''}
+
+${data.achievements && data.achievements.length > 0 ? `
+<h2>Achievements & Certifications</h2>
+<ul>
+  ${data.achievements.map(ach => `
+    <li>
+      <div style="display: flex; justify-content: space-between;">
+        <span><span class="bold">${ach.title}</span> – ${ach.issuer}</span>
+        ${ach.link ? `<a href="${ach.link}" target="_blank">Link</a>` : ''}
+      </div>
+    </li>
+  `).join('')}
+</ul>
+` : ''}
+
+</body>
+</html>
+`;
+}
+
+module.exports = generateResumeHTML;
+
+const html_to_pdf = require('html-pdf-node');
+
+async function generatePDFfromHTML(html) {
+  const file = { content: html };
+
+  const options = {
+    format: 'A4',
+    margin: {
+      top: '10mm',
+      bottom: '10mm',
+      left: '10mm',
+      right: '10mm'
+    }
+  };
+
+  const pdfBuffer = await html_to_pdf.generatePdf(file, options);
+  return pdfBuffer;
+}
+
+
+app.post("/api/send-resume", verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+    const { resumeData } = req.body;
+
+    if (!resumeData) {
+      return res.status(400).json({ error: "Resume data required" });
+    }
+
+    // Get user profile
+    const snap = await db.collection("users").doc(uid).get();
+    if (!snap.exists) return res.status(404).json({ error: "Profile not found" });
+
+    const profile = snap.data();
+    const userEmail = profile.email;
+
+    /* ------------------------ 1. HTML → PDF ------------------------ */
+    const html = generateResumeHTML(resumeData);
+    const pdfBytes = await generatePDFfromHTML(html); // returns Buffer
+
+    /* ------------------------ 2. Email Send ------------------------ */
+    await transporter.sendMail({
+      from: `ResumeQualify <${process.env.EMAIL_USER}>`,
+      to: userEmail,
+      subject: "Your Resume from ResumeQualify",
+      text: "Your resume is attached.",
+      attachments: [
+        {
+          filename: `${profile.username}_Resume.pdf`,
+          content: pdfBytes,
+        },
+      ],
+    });
+
+    /* ------------------------ 3. Cloudinary Upload (FIXED) ------------------------ */
+
+    // Convert buffer to base64
+    const base64PDF = `data:application/pdf;base64,${pdfBytes.toString("base64")}`;
+
+    const uploadResult = await cloudinary.uploader.upload(base64PDF, {
+      folder: "resumequalify_resumes",
+      public_id: `resume_${uid}_${Date.now()}`,
+      resource_type: "raw",       // RAW for PDF
+      access_mode: "public",      // PUBLIC URL
+      format: "pdf"               // Ensure PDF format
+    });
+
+    // Save URL to Firestore
+    await db.collection("users").doc(uid).set({
+      resumePdf: uploadResult.secure_url
+    }, { merge: true });
+
+    /* ------------------------ 4. Response ------------------------ */
+    res.json({
+      success: true,
+      cloudinaryUrl: uploadResult.secure_url,
+      message: "Resume emailed & uploaded successfully!",
+    });
+
+  } catch (err) {
+    console.error("PDF Generation Error:", err);
+    res.status(500).json({
+      error: "Failed to send resume",
+      details: err.message,
+    });
+  }
+});
+
+
+
+
+
+
+// app.post("/api/send-resume", verifyToken, async (req, res) => {
+//   try {
+//     const uid = req.user.uid;
+//     const { resumeData } = req.body;
+
+//     if (!resumeData) {
+//       return res.status(400).json({ error: "Resume data required" });
+//     }
+
+//     // Fetch profile (for email)
+//     const snap = await db.collection("users").doc(uid).get();
+//     if (!snap.exists) return res.status(404).json({ error: "Profile not found" });
+
+//     const profile = snap.data();
+//     const userEmail = profile.email;
+
+//     // Create PDF
+//     const pdfBytes = await createResumePDF(resumeData);
+
+//     // Email options
+//     const mailOptions = {
+//       from: process.env.EMAIL_USER,
+//       to: userEmail,
+//       subject: "Your Resume from ResumeQualify",
+//       text: "Attached is your generated resume PDF.",
+//       attachments: [
+//         {
+//           filename: `${profile.username}_Resume.pdf`,
+//           content: Buffer.from(pdfBytes),
+//         },
+//       ],
+//     };
+
+//     // Send email
+//     await transporter.sendMail(mailOptions);
+
+//     res.json({
+//       success: true,
+//       message: "Resume sent successfully to your email",
+//     });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Failed to send resume", details: err.message });
+//   }
+// });
+
 
 /* -------------------- Signup -------------------- */
 app.post("/api/signup", async (req, res) => {
@@ -84,7 +458,7 @@ app.post("/api/signup", async (req, res) => {
       uid: userRecord.uid,
       email,
       username: username,
-      credit: 10,
+      credit: 20,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -155,11 +529,17 @@ app.get("/api/profile", verifyToken, async (req, res) => {
     const snap = await db.collection("users").doc(uid).get();
     if (!snap.exists)
       return res.status(404).json({ error: "Profile not found" });
-    res.json(snap.data());
+
+    res.json({
+      uid,
+      ...snap.data()
+    });
+
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 app.patch("/api/profile", verifyToken, async (req, res) => {
   try {

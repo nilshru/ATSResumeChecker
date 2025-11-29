@@ -6,7 +6,7 @@ const templatesData = [
   {
     id: 1,
     name: 'Template One',
-    img: '/template1.png',
+    img: 'https://res.cloudinary.com/dxkm08ohf/image/upload/v1764440575/Gemini_Generated_Image_mxpoaymxpoaymxpo_l789gt.png',
   }
 
 ];

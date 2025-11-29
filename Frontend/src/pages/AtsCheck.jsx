@@ -60,6 +60,7 @@ function AtsCheck() {
       setLoading(true);
       setFile(selectedFile);
       const text = await extractTextFromFile(selectedFile);
+       //console.log("📄 Extracted Resume Text (Frontend):", text);
       setResumeText(text);
       await callAtsScore(text);
     } catch (err) { 

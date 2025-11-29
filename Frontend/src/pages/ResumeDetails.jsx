@@ -4,8 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
 
-const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
-const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
 
 // Step Components
 import PersonalDetails from "../components/resumeSteps/PersonalDetails";
@@ -17,17 +16,17 @@ import ProjectsDetails from "../components/resumeSteps/ProjectsDetails";
 import AchievementsDetails from "../components/resumeSteps/AchievementsDetails";
 import ResumePreview from "../components/resumeSteps/ResumePreview";
 import MainLoder from "../components/Loader/MainLoder";
-
-function ResumeDetails() { 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
+function ResumeDetails() {
   const { id } = useParams();
   const { profile, updateProfile } = useAuth();
 
   const [resumeData, setResumeData] = useState({
-    personal: { name: "", email: "", phone: "", address: "", profileImage: "" },
+    personal: { name: "", email: "", phone: "", address: "", profileImage: "", website: "", linkedin: "", github: "" },
     summary: "",
     education: [],
     experience: [],
-    skills: [],
+    skills: [], // Can be Array or Object based on your backend
     projects: [],
     achievements: [],
   });
@@ -41,11 +40,15 @@ function ResumeDetails() {
         phone: profile.phone || "",
         address: profile.address || "",
         profileImage: profile.profileImage || "",
+        website: profile.website || "",
+        linkedin: profile.linkedin || "",
+        github: profile.github || "",
       },
       summary: profile.summary || "",
       education: Array.isArray(profile.education) ? profile.education : [],
       experience: Array.isArray(profile.experience) ? profile.experience : [],
-      skills: Array.isArray(profile.skills) ? profile.skills : [],
+      // Keep raw data from DB here
+      skills: profile.skills || [], 
       projects: Array.isArray(profile.projects) ? profile.projects : [],
       achievements: Array.isArray(profile.achievements) ? profile.achievements : [],
     });
@@ -87,6 +90,9 @@ function ResumeDetails() {
         phone: resumeData.personal.phone,
         address: resumeData.personal.address,
         profileImage: resumeData.personal.profileImage,
+        website: resumeData.personal.website,
+        linkedin: resumeData.personal.linkedin,
+        github: resumeData.personal.github,
         summary: resumeData.summary,
         education: resumeData.education,
         experience: resumeData.experience,
@@ -105,75 +111,63 @@ function ResumeDetails() {
     }
   };
 
-  const handleDownload = async () => {
-    if (!profile) return;
+
+
+  const handleSendToEmail = async () => {
     try {
       setLoadingDownload(true);
+      const token = localStorage.getItem("idToken");
 
-      const input = document.getElementById("resume-content");
-
-      // Generate PNG at higher resolution to keep PDF quality
-      const canvas = await toPng(input, { quality: 1.0, pixelRatio: 2 });
-      const pdf = new jsPDF("p", "pt", "a4");
-      const imgProps = pdf.getImageProperties(canvas);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-      pdf.addImage(canvas, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-      const pdfBlob = pdf.output("blob");
-
-      // Use unique public_id to ensure latest file updates database
-      const timestamp = new Date().getTime();
-      const publicId = `resume_${profile.uid}_${timestamp}`;
-
-      const formData = new FormData();
-      formData.append("file", pdfBlob, `${profile.username}_ResumeQualify.pdf`);
-      formData.append("upload_preset", UPLOAD_PRESET);
-      formData.append("public_id", publicId);
-      formData.append("resource_type", "raw");
-
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
-        { method: "POST", body: formData }
-      );
+      const res = await fetch(`${API_BASE}/api/send-resume`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ resumeData }),
+      });
 
       const data = await res.json();
 
-      if (!data.secure_url) throw new Error(data.error?.message || "Upload failed");
-
-      // Update profile database with the latest URL
-      await updateProfile({ resumePdf: data.secure_url });
-
-      alert("✅ Resume uploaded successfully!");
-      console.log("Cloudinary PDF URL:", data.secure_url);
-
-      // Download locally
-      pdf.save(`${profile.username}_ResumeQualify.pdf`);
+      if (data.success) {
+        alert("📨 Resume sent to your email!");
+      } else {
+        alert("❌ Failed: " + data.error);
+      }
     } catch (err) {
-      console.error("❌ Error generating/uploading PDF:", err);
-      alert("Failed to generate/upload PDF");
+      alert("⚠️ Error sending resume");
     } finally {
       setLoadingDownload(false);
     }
   };
-  if(loadingDownload){
-    return(
+
+  // --- ADAPTER FOR NEW HTML TEMPLATE LOGIC ---
+  // The HTML template you provided expects skills to be an object (Categories).
+  // If your state is a flat array, we wrap it so the Preview renders it correctly.
+  const previewData = {
+    ...resumeData,
+    skills: Array.isArray(resumeData.skills) && resumeData.skills.length > 0
+      ? { "Technical Skills": resumeData.skills } // Default category if array
+      : resumeData.skills
+  };
+
+  if (loadingDownload) {
+    return (
       <div className="flex justify-center items-center h-screen">
-      <MainLoder/>
+        <MainLoder />
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 font-sans">
       <h1 className="text-2xl sm:text-3xl font-bold text-center text-teal-500 mb-6">
         Building Resume Template #{id}
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
         {/* Left Form */}
-        <div className="w-full lg:w-1/2 bg-white shadow-lg rounded-xl p-4 sm:p-6 border border-teal-300 overflow-hidden">
+        <div className="w-full lg:w-1/2 bg-white shadow-lg rounded-xl p-4 sm:p-6 border border-teal-300 overflow-hidden h-fit">
           <h2 className="text-lg sm:text-xl font-semibold mb-4 text-teal-500">
             {steps[currentStep].title}
           </h2>
@@ -183,7 +177,7 @@ function ResumeDetails() {
 
           <div className="flex justify-between mt-6">
             <button
-              className="px-4 py-2 bg-gray-300 rounded-lg disabled:opacity-50"
+              className="px-4 py-2 bg-gray-300 rounded-lg disabled:opacity-50 hover:bg-gray-400 transition"
               onClick={prevStep}
               disabled={currentStep === 0}
             >
@@ -192,7 +186,7 @@ function ResumeDetails() {
 
             {!isSaved ? (
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 transition"
                 onClick={handleSave}
                 disabled={loadingSave}
               >
@@ -200,7 +194,7 @@ function ResumeDetails() {
               </button>
             ) : (
               <button
-                className="px-4 py-2 bg-teal-500 text-white rounded-lg disabled:opacity-50"
+                className="px-4 py-2 bg-teal-500 text-white rounded-lg disabled:opacity-50 hover:bg-teal-600 transition"
                 onClick={nextStep}
                 disabled={currentStep === steps.length - 1}
               >
@@ -209,24 +203,43 @@ function ResumeDetails() {
             )}
           </div>
 
-          <div className="mt-6 flex gap-3 items-center">
+          <div className="mt-6 flex flex-wrap gap-3 items-center">
+
             <button
-              className="px-4 py-2 bg-green-500 text-white rounded-lg"
-              onClick={handleDownload}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+              onClick={handleSendToEmail}
               disabled={loadingDownload}
             >
-              {loadingDownload ? "Downloading..." : "Download PDF"}
+         {loadingDownload ? "Generating..." : "Send to Email"}
             </button>
           </div>
         </div>
 
-        {/* Right Preview */}
+        {/* Right Preview - UPDATED FOR TEMPLATE */}
         <div
           id="resume-preview"
-          className="w-full lg:w-1/2 h-full bg-white shadow-lg rounded-xl border border-gray-300 overflow-auto break-words whitespace-pre-wrap"
+          // Changes explained below:
+          // 1. h-[calc(100vh-120px)]: Iski height screen ki height minus header rakhi hai.
+          // 2. overflow-y-auto: Taki agar resume lamba ho to is div ke andar scrollbar aaye.
+          // 3. sticky top-6: Taki ye box screen par tika rahe.
+          className="w-full lg:w-1/2 bg-gray-200 shadow-inner rounded-xl border border-gray-300 overflow-y-auto p-4 flex justify-center h-[calc(100vh-120px)] sticky top-6"
         >
-          <div id="resume-content" className="resume-container py-7 px-6">
-            <ResumePreview data={resumeData} />
+          {/* NOTE: 'resume-content' represents the A4 page. 
+             Styles here ensure the captured image looks exactly like paper.
+          */}
+          <div 
+            id="resume-content" 
+            className="bg-white shadow-2xl"
+            style={{
+               width: "210mm",  // A4 Width
+               minHeight: "297mm", // A4 Height
+               padding: "0",    // Padding handled inside ResumePreview component styles
+               margin: "0 auto",
+               boxSizing: "border-box"
+            }}
+          >
+            {/* Pass the formatted data (handled skills) to the component */}
+            <ResumePreview data={previewData} />
           </div>
         </div>
       </div>

@@ -117,13 +117,13 @@ const handleDownloadResume = () => {
             Download Resume
           </button>
 
-          <button
+          {/* <button
             type="submit"
             disabled={saving}
             className="w-full bg-teal-400 text-white py-3 rounded-md border-2 hover:shadow-md shadow-teal-200 hover:border-white hover:bg-teal-300 transition"
           >
             {saving ? "Saving..." : "Update Profile"}
-          </button>
+          </button> */}
         </form>
 
         <button

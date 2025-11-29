@@ -2,60 +2,115 @@ import React from "react";
 
 function ProjectsDetails({ data, setData }) {
   const handleChange = (e, index) => {
+    const { name, value } = e.target;
     const updated = [...data.projects];
-    updated[index][e.target.name] = e.target.value;
-    setData({ ...data, projects: updated });
+    updated[index] = { ...updated[index], [name]: value };
+    setData((prev) => ({ ...prev, projects: updated }));
+  };
+
+  // Special handler for description points to split by newline
+  const handlePointsChange = (e, index) => {
+    const { value } = e.target;
+    const updated = [...data.projects];
+    // Split by newline to create array of points
+    updated[index] = { ...updated[index], points: value.split("\n") };
+    setData((prev) => ({ ...prev, projects: updated }));
+  };
+
+  // Helper to convert array back to string for textarea display
+  const getPointsString = (points) => {
+    if (!points) return "";
+    return Array.isArray(points) ? points.join("\n") : points;
   };
 
   const addProject = () => {
-    setData({
-      ...data,
-      projects: [...data.projects, { title: "", description: "" }]
-    });
+    setData((prev) => ({
+      ...prev,
+      projects: [
+        ...prev.projects,
+        { title: "", live: "", github: "", tools: "", points: [] },
+      ],
+    }));
   };
 
-  const deleteLastProject = () => {
-    if (data.projects.length > 0) {
-      const updated = data.projects.slice(0, -1); // last element remove
-      setData({ ...data, projects: updated });
-    }
+  const removeProject = (index) => {
+    const updated = data.projects.filter((_, idx) => idx !== index);
+    setData((prev) => ({ ...prev, projects: updated }));
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-2">Projects</h2>
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold mb-2">Projects Details</h2>
+      
       {data.projects.map((proj, idx) => (
-        <div key={idx} className="mb-4">
-          <input
-            type="text"
-            name="title"
-            placeholder="Project Title"
-            value={proj.title}
-            onChange={(e) => handleChange(e, idx)}
-            className="border p-2 w-full mb-2"
-          />
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={proj.description}
-            onChange={(e) => handleChange(e, idx)}
-            className="border p-2 w-full"
-          />
+        <div key={idx} className="mb-4 border p-4 rounded bg-gray-50 shadow-sm relative">
+            <div className="grid grid-cols-1 gap-3">
+                {/* Title */}
+                <input
+                type="text"
+                name="title"
+                placeholder="Project Title"
+                value={proj.title || ""}
+                onChange={(e) => handleChange(e, idx)}
+                className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                
+                {/* Links Row */}
+                <div className="grid grid-cols-2 gap-4">
+                    <input
+                    type="text"
+                    name="live"
+                    placeholder="Live Link (optional)"
+                    value={proj.live || ""}
+                    onChange={(e) => handleChange(e, idx)}
+                    className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <input
+                    type="text"
+                    name="github"
+                    placeholder="GitHub Link (optional)"
+                    value={proj.github || ""}
+                    onChange={(e) => handleChange(e, idx)}
+                    className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
+
+                {/* Tools */}
+                <input
+                type="text"
+                name="tools"
+                placeholder="Tools Used (e.g., React.js, Node.js, Firebase)"
+                value={proj.tools || ""}
+                onChange={(e) => handleChange(e, idx)}
+                className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+
+                {/* Description Points */}
+                <textarea
+                name="points"
+                placeholder="Description Points (Type each bullet point on a new line)"
+                value={getPointsString(proj.points)}
+                onChange={(e) => handlePointsChange(e, idx)}
+                rows={4}
+                className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+            </div>
+
+          <button
+            onClick={() => removeProject(idx)}
+            className="text-red-500 text-sm mt-3 hover:underline"
+          >
+            Remove this project
+          </button>
         </div>
       ))}
 
-      <button onClick={addProject} className="bg-gray-300 px-3 py-1 rounded">
+      <button
+        onClick={addProject}
+        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold"
+      >
         + Add Project
       </button>
-
-      <div className="mt-4 flex justify-between">
-        <button
-          onClick={deleteLastProject}
-          className="bg-red-400 text-white px-3 py-1 rounded"
-        >
-          Delete Last Project
-        </button>
-      </div> 
     </div>
   );
 }
