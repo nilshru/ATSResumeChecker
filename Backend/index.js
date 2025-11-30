@@ -110,7 +110,7 @@ function generateResumeHTML(data) {
   /* Base Styles */
   body {
     font-family: Cambria, Georgia, "Times New Roman", serif;
-    margin: 40px 50px;
+    margin: 40px 30px;
     color: #000;
     line-height: 1.4; 
     font-size: 11pt;

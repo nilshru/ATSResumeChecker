@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import MainLoder from "../components/Loader/MainLoder";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, LogIn } from "lucide-react";
 
 function Login() {
   const { login, user } = useAuth();
@@ -21,91 +21,128 @@ function Login() {
     setError("");
     setLoading(true);
 
-    try { 
+    try {
       await login({ email, password });
-      navigate("/"); // redirect to homepage/dashboard
+      navigate("/");
     } catch (err) {
-      setError(err.response.data.error);
-      // console.error(err);
-      // console.error(err.response.data.error);
+      setError(err.response?.data?.error || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
   };
 
-  
-  
-
-  if (loading){
-    return(
-      <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100">
-        <MainLoder/>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-xl shadow-teal-200 p-8 space-y-6">
-        <h2 className="text-center text-2xl font-extrabold text-black sm:text-3xl">
-          Login to your account
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 font-sans relative overflow-hidden">
+      
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-teal-100/40 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-indigo-100/40 rounded-full blur-3xl opacity-60"></div>
+      </div>
 
-        {/* Email and Password Form */}
-        <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="max-w-md w-full bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-slate-200/60 p-8 sm:p-10 relative z-10">
+        
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-900 text-white mb-4 shadow-lg shadow-slate-900/20">
+             <LogIn size={20} />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Welcome back
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">
+            Please enter your details to sign in.
+          </p>
+        </div>
+
+        {/* Form */}
+        <form className="space-y-6" onSubmit={handleSubmit}>
           
-
+          {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-teal-400">
-              Email address
+            <label htmlFor="email" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+              Email Address
             </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-            />
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-teal-500 transition-colors" />
+              </div>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all sm:text-sm"
+                placeholder="name@company.com"
+              />
+            </div>
           </div>
 
-          <div className="relative">
-            <label htmlFor="password" className="block text-sm font-medium text-teal-400">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-            />
-            <button
-              type="button" className="absolute mt-3 right-2 top-1/2 transform -translate-y-1/2 bg-transparent cursor-pointer" onClick={() => setShowPassword(!showPassword)}>{showPassword ? "👁" : "👁"}</button>
+          {/* Password */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+                <label htmlFor="password" className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Password
+                </label>
+            </div>
+            
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-teal-500 transition-colors" />
+              </div>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full pl-11 pr-12 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all sm:text-sm"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
 
+          {/* Error Message */}
+          {error && (
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-100 text-rose-600 text-sm flex items-center gap-2 animate-pulse">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 shrink-0">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-teal-400 text-white py-3 rounded-md border-2 hover:shadow-md shadow-teal-200 hover:border-white hover:bg-teal-300 transition"
-            style={loading ? { cursor: "not-allowed", backgroundColor: "gray"} : {}}
+            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-slate-900/20 text-sm font-bold text-white bg-slate-900 hover:bg-black hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
-            {loading ? "Login..." : "Login"}
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                Signing in...
+              </>
+            ) : (
+              <>
+                Sign In <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+            )}
           </button>
         </form>
 
-        <p className="text-center text-sm text-black">
+        {/* Footer Link */}
+        <p className="mt-8 text-center text-sm text-slate-500">
           Don't have an account?{" "}
-          <Link
-            to="/signup"
-            className="font-semibold text-teal-400 hover:underline"
-          >
+          <Link to="/signup" className="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-all">
             Create a new one
           </Link>
         </p>
@@ -115,4 +152,3 @@ function Login() {
 }
 
 export default Login;
-
