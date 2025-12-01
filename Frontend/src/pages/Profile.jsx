@@ -5,6 +5,7 @@ import { User, Mail, Phone, Download, LogOut, MapPin, Linkedin, Github, Globe, S
 
 function Profile() {
   const { user, profile, loading, logout } = useAuth();
+  //console.log("User Profile Data:", profile);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -138,7 +139,7 @@ function Profile() {
                             <div className="p-2 bg-slate-50 rounded-lg text-slate-400 shrink-0"><Phone size={18}/></div>
                             <div>
                                 <p className="text-xs text-slate-500 font-semibold uppercase">Phone Number</p>
-                                <div className="mt-1">{displayValue(profile?.phone)}</div>
+                                <div className="mt-1">{displayValue(profile?.personal?.phone)}</div>
                             </div>
                         </div>
 
@@ -147,7 +148,7 @@ function Profile() {
                             <div className="p-2 bg-slate-50 rounded-lg text-slate-400 shrink-0"><MapPin size={18}/></div>
                             <div>
                                 <p className="text-xs text-slate-500 font-semibold uppercase">Address</p>
-                                <div className="mt-1">{displayValue(profile?.address)}</div>
+                                <div className="mt-1">{displayValue(profile?.personal?.address)}</div>
                             </div>
                         </div>
 
@@ -166,7 +167,7 @@ function Profile() {
                             <Linkedin className="text-blue-600 shrink-0" size={20}/>
                             <div className="overflow-hidden min-w-0">
                                 <p className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">LinkedIn</p>
-                                <div className="truncate text-sm">{displayLink(profile?.linkedin, "View Profile")}</div>
+                                <div className="truncate text-sm">{displayLink(profile?.personal?.linkedin, "View Profile")}</div>
                             </div>
                         </div>
 
@@ -175,7 +176,7 @@ function Profile() {
                             <Github className="text-slate-800 shrink-0" size={20}/>
                             <div className="overflow-hidden min-w-0">
                                 <p className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">GitHub</p>
-                                <div className="truncate text-sm">{displayLink(profile?.github, "View Profile")}</div>
+                                <div className="truncate text-sm">{displayLink(profile?.personal?.github, "View Profile")}</div>
                             </div>
                         </div>
 
@@ -184,7 +185,7 @@ function Profile() {
                             <Globe className="text-teal-600 shrink-0" size={20}/>
                             <div className="overflow-hidden min-w-0">
                                 <p className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">Website</p>
-                                <div className="truncate text-sm">{displayLink(profile?.website, "Visit Site")}</div>
+                                <div className="truncate text-sm">{displayLink(profile?.personal?.website, "Visit Site")}</div>
                             </div>
                         </div>
 
